@@ -11,7 +11,10 @@ import { LanguageSwitch, LevelSwitch, ThemeMenu } from './preferences'
 function Brand() {
   const { t } = useI18n()
   return (
-    <a href="#/aes" className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+    <a
+      href="#/aes"
+      className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+    >
       <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]">
         <LockKeyIcon weight="bold" className="size-4.5" />
       </span>
@@ -44,7 +47,7 @@ function NavList({ onNavigate, layoutId }: { onNavigate?: () => void; layoutId: 
                   go(route.id)
                 }}
                 className={cn(
-                  'relative isolate flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
+                  'relative isolate flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
                   active ? 'text-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
                 )}
               >
@@ -102,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex h-16 items-center px-5">
           <Brand />
         </div>
-        <div className="scrollbar-thin flex-1 overflow-y-auto px-3 py-3">
+        <div className="flex-1 scrollbar-thin overflow-y-auto px-3 py-3">
           <NavList layoutId="nav-desktop" />
         </div>
         <div className="border-t border-sidebar-border p-4">
@@ -120,6 +123,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </SheetTrigger>
           <SheetContent
             side="left"
+            closeLabel={t('common.close')}
             className="flex w-72 flex-col gap-0 bg-sidebar p-0"
             onOpenAutoFocus={(event) => {
               // Radix skips links when choosing initial focus; the current page link is the natural start.

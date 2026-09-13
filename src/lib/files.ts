@@ -25,7 +25,11 @@ export async function loadFile(file: File): Promise<LoadedFile> {
 
 /** What a data input currently holds: editable text (maybe from a file) or an opaque binary file. */
 export type InputValue =
-  | { kind: 'text'; text: string; file?: { name: string; size: number; bytes: Uint8Array<ArrayBuffer>; pristine: boolean } }
+  | {
+      kind: 'text'
+      text: string
+      file?: { name: string; size: number; bytes: Uint8Array<ArrayBuffer>; pristine: boolean }
+    }
   | { kind: 'binary'; file: LoadedFile }
 
 export const EMPTY_INPUT: InputValue = { kind: 'text', text: '' }
@@ -56,6 +60,18 @@ export function downloadBlob(data: BlobPart, fileName: string, type: string): vo
   setTimeout(() => URL.revokeObjectURL(url), 2000)
 }
 
+/** "Khóa RSA 3072 bit" -> "khoa-rsa-3072-bit", safe on every file system. */
+export function fileSlug(name: string, fallback = 'rsa-key'): string {
+  const slug = name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return slug || fallback
+}
+
 const ENCRYPTED_SUFFIXES = ['.edt', '.edt.bin', '.enc', '.bin', '.b64', '.txt.edt']
 
 /** "notes.txt" -> "notes.txt.edt"; decrypting "notes.txt.edt" -> "notes.txt". */
@@ -65,7 +81,9 @@ export function encryptedFileName(source: string | undefined, extension: string,
 
 export function decryptedFileName(source: string | undefined, isText: boolean): string {
   if (source) {
-    const suffix = ENCRYPTED_SUFFIXES.filter((s) => source.toLowerCase().endsWith(s)).sort((a, b) => b.length - a.length)[0]
+    const suffix = ENCRYPTED_SUFFIXES.filter((s) => source.toLowerCase().endsWith(s)).sort(
+      (a, b) => b.length - a.length,
+    )[0]
     if (suffix && source.length > suffix.length) return source.slice(0, -suffix.length)
   }
   return isText ? 'decrypted.txt' : 'decrypted.bin'

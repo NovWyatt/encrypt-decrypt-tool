@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react'
-import { ArrowRightIcon, MagnifyingGlassIcon, SlidersHorizontalIcon, WarningIcon } from '@phosphor-icons/react'
+import { ArrowRightIcon, SlidersHorizontalIcon, WarningIcon } from '@phosphor-icons/react'
 import { cn } from 'cn'
 import { navigate } from '@/app/routes'
+import { AdvancedLink } from '@/components/common/advanced-link'
 import { ChoiceCards, NumberField, Tag } from '@/components/common/choice'
+import { DetectionSummary } from '@/components/crypto/detection-summary'
 import { Panel } from '@/components/common/page'
+import { SettingsSection } from '@/components/common/settings-section'
 import { KeyField, PasswordField } from '@/components/common/secret-fields'
 import { Segmented } from '@/components/common/segmented'
 import { DetailsList } from '@/components/common/output'
@@ -15,6 +18,7 @@ import { Switch } from '@/components/ui/switch'
 import { useI18n, type TKey } from '@/i18n'
 import { IV_LENGTH, type AesKeyBits, type AesMode } from '@/lib/crypto/aes-params'
 import { isWeakKdf, KDF_DEFAULTS, type KdfName } from '@/lib/crypto/kdf-params'
+import type { InspectState } from '@/hooks/use-inspection'
 import { describeError } from '@/lib/describe-error'
 import { algorithmLabel, describeKdf } from '@/lib/format'
 import { updateSettings, type Level } from '@/stores/settings'
@@ -23,29 +27,11 @@ import {
   encryptSecretKind,
   selectedKdf,
   type AesOptions,
-  type InspectState,
   type OpenSslDecryptOptions,
   type RawDecryptOptions,
   type SecretKind,
   type SecretState,
 } from './options'
-
-export function SettingsSection({
-  title,
-  children,
-  className,
-}: {
-  title?: string
-  children: ReactNode
-  className?: string
-}) {
-  return (
-    <div className={cn('flex flex-col gap-3 border-t px-4 py-4 first:border-t-0', className)}>
-      {title && <h3 className="text-[0.8125rem] font-semibold">{title}</h3>}
-      {children}
-    </div>
-  )
-}
 
 function InlineWarning({ children, tone = 'warn' }: { children: ReactNode; tone?: 'warn' | 'bad' }) {
   return (
@@ -335,15 +321,7 @@ export function EncryptSettings({ level, options, onOptions, secret, onSecret, e
               { label: t('aes.sumContainer'), value: t('aes.formatEdt') },
             ]}
           />
-          <Button
-            variant="link"
-            size="sm"
-            className="self-start px-0"
-            onClick={() => updateSettings({ level: 'advanced' })}
-          >
-            <SlidersHorizontalIcon />
-            {t('settings.advancedHint')}
-          </Button>
+          <AdvancedLink />
         </SettingsSection>
       )}
 
@@ -513,28 +491,17 @@ export function DecryptSettings({
   return (
     <Panel as="aside" className="overflow-hidden">
       <SettingsSection title={t('aes.detected')}>
-        <div className="flex items-start gap-2.5">
-          <span
-            className={cn(
-              'grid size-8 shrink-0 place-items-center rounded-lg',
-              result ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
-            )}
-          >
-            <MagnifyingGlassIcon weight="bold" className="size-4" />
-          </span>
-          <div className="min-w-0 pt-0.5">
-            <p className="text-sm font-medium">{inspection.status === 'empty' ? '...' : detected}</p>
-            {summary?.kind === 'aes' && (
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {algorithmLabel(summary)}
-                {summary.kdf ? `, ${describeKdf(summary.kdf, formatNumber)}` : ''}
-              </p>
-            )}
-            {inspection.status === 'invalid' && (
-              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{describeError(inspection.error, t)}</p>
-            )}
-          </div>
-        </div>
+        <DetectionSummary recognized={result !== null} label={inspection.status === 'empty' ? '...' : detected}>
+          {summary?.kind === 'aes' && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {algorithmLabel(summary)}
+              {summary.kdf ? `, ${describeKdf(summary.kdf, formatNumber)}` : ''}
+            </p>
+          )}
+          {inspection.status === 'invalid' && (
+            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{describeError(inspection.error, t)}</p>
+          )}
+        </DetectionSummary>
         {isRsa && (
           <div className="flex flex-col gap-2.5 rounded-lg bg-muted/60 p-3">
             <p className="text-xs leading-relaxed">{t('aes.rsaHere')}</p>
@@ -673,7 +640,12 @@ export function DecryptSettings({
         ) : (
           <SettingsSection>
             <p className="text-xs leading-relaxed text-muted-foreground">{t('aes.formatRawHint')}</p>
-            <Button variant="outline" size="sm" className="self-start" onClick={() => updateSettings({ level: 'advanced' })}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="self-start"
+              onClick={() => updateSettings({ level: 'advanced' })}
+            >
               <SlidersHorizontalIcon />
               {t('settings.advanced')}
             </Button>

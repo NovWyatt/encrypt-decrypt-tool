@@ -3,6 +3,9 @@ import { useRoute, type RouteId } from '@/app/routes'
 import { AppShell } from '@/components/layout/app-shell'
 import { PageContainer, PageHeader } from '@/components/common/page'
 import { AesPage } from '@/features/aes/aes-page'
+import { KeysPage } from '@/features/keys/keys-page'
+import { RsaPage } from '@/features/rsa/rsa-page'
+import { SignPage } from '@/features/sign/sign-page'
 import { useI18n } from '@/i18n'
 import { warmUpCrypto } from '@/lib/crypto/client'
 
@@ -16,9 +19,9 @@ function Placeholder({ title }: { title: string }) {
 
 const PAGES: Record<RouteId, ComponentType> = {
   aes: AesPage,
-  rsa: () => <Placeholder title="RSA" />,
-  sign: () => <Placeholder title="Sign" />,
-  keys: () => <Placeholder title="Keys" />,
+  rsa: RsaPage,
+  sign: SignPage,
+  keys: KeysPage,
   learn: () => <Placeholder title="Learn" />,
 }
 

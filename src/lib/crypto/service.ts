@@ -4,17 +4,7 @@
  */
 import { aesDecrypt, aesEncrypt, IV_LENGTH, type AesKeyBits, type AesMode } from './aes'
 import { decryptAesMessage, encryptAesMessage, type AesSecret } from './aes-envelope'
-import {
-  fromBase64,
-  fromHex,
-  isHex,
-  isValidUtf8,
-  toBase64,
-  toHex,
-  utf8Decode,
-  utf8Encode,
-  wrapLines,
-} from './encoding'
+import { fromBase64, fromHex, isHex, isValidUtf8, toBase64, toHex, utf8Decode, utf8Encode, wrapLines } from './encoding'
 import {
   ARMOR_MESSAGE,
   ARMOR_SIGNATURE,
@@ -594,15 +584,26 @@ export async function decryptRsa(req: RsaDecryptRequest): Promise<DecryptRespons
     const { header } = envelope
     if (header.type === 'rsa-hybrid') {
       const result = await decryptHybrid(envelope, req.keys)
-      return toDecryptResponse(result.plaintext, summarizeHeader(header), { kdfMs: 0, cipherMs: performance.now() - start }, result.keyId)
+      return toDecryptResponse(
+        result.plaintext,
+        summarizeHeader(header),
+        { kdfMs: 0, cipherMs: performance.now() - start },
+        result.keyId,
+      )
     }
     if (header.type === 'rsa') {
       const result = await decryptRsaDirect(envelope, req.keys)
-      return toDecryptResponse(result.plaintext, summarizeHeader(header), { kdfMs: 0, cipherMs: performance.now() - start }, result.keyId)
+      return toDecryptResponse(
+        result.plaintext,
+        summarizeHeader(header),
+        { kdfMs: 0, cipherMs: performance.now() - start },
+        result.keyId,
+      )
     }
     throw new CryptoError('UNSUPPORTED', 'This container is not an RSA message', { type: header.type })
   }
-  if (detected.kind === 'openssl') throw new CryptoError('UNSUPPORTED', 'OpenSSL data is AES, not RSA', { type: 'openssl' })
+  if (detected.kind === 'openssl')
+    throw new CryptoError('UNSUPPORTED', 'OpenSSL data is AES, not RSA', { type: 'openssl' })
   const key = req.keys.find((k) => k.pkcs8)
   if (!key?.pkcs8) throw new CryptoError('PRIVATE_KEY_REQUIRED', 'A private key is required')
   const hash = req.rawHash ?? 'SHA-256'
@@ -664,31 +665,28 @@ export interface VerifyResponse extends VerifyOutcome {
 
 export async function verify(req: VerifyRequest): Promise<VerifyResponse> {
   if (req.keys.length === 0) throw new CryptoError('INVALID_INPUT', 'A public key is required')
-  let signatureBytes: Uint8Array<ArrayBuffer>
-  if (req.signature.bytes) signatureBytes = req.signature.bytes
-  else {
-    const text = (req.signature.text ?? '').trim()
-    if (text.includes(`-----BEGIN ${ARMOR_SIGNATURE}-----`)) signatureBytes = detectTextInput(text).bytes
-    else if (isHex(text)) signatureBytes = fromHex(text)
-    else signatureBytes = fromBase64(text)
-  }
+  // Same detection as decryption, so armored, base64 and hex signatures work from files too.
+  const detected = detect(req.signature)
 
-  if (signatureBytes[0] === 0x45 && signatureBytes[1] === 0x44 && signatureBytes[2] === 0x54) {
-    const { header } = decodeEnvelope(signatureBytes)
-    if (header.type !== 'signature') throw new CryptoError('UNSUPPORTED', 'Not a signature container', { type: header.type })
+  if (detected.kind === 'envelope') {
+    const { header } = detected
+    if (header.type !== 'signature')
+      throw new CryptoError('UNSUPPORTED', 'Not a signature container', { type: header.type })
     const ids = await Promise.all(req.keys.map((k) => computeKeyId(k.spki)))
     const index = ids.indexOf(header.keyId)
     if (index === -1 && req.keys.length > 1) {
       throw new CryptoError('NO_MATCHING_KEY', 'No public key matches this signature', { recipients: header.keyId })
     }
-    const outcome = await verifySignatureContainer(req.data, signatureBytes, req.keys[Math.max(index, 0)].spki)
+    const outcome = await verifySignatureContainer(req.data, detected.bytes, req.keys[Math.max(index, 0)].spki)
     return { ...outcome, container: 'edt' }
   }
+  if (detected.kind === 'openssl')
+    throw new CryptoError('UNSUPPORTED', 'OpenSSL data is not a signature', { type: 'openssl' })
 
   if (!req.raw) throw new CryptoError('UNKNOWN_FORMAT', 'Bare signatures need the scheme and hash')
   const outcome = await verifyRawSignature(
     req.data,
-    signatureBytes,
+    detected.bytes,
     req.keys[0].spki,
     req.raw.scheme,
     req.raw.hash,

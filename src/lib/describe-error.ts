@@ -1,12 +1,15 @@
-import type { TFunction, TKey } from '@/i18n'
+import type { TFunction, TKey, TParams } from '@/i18n'
 import { CryptoError } from '@/lib/crypto/errors'
 import { FileTooLargeError, MAX_FILE_BYTES } from '@/lib/files'
 
 /** Validation problems caught before calling the crypto layer, carrying an i18n key. */
 export class InputProblem extends Error {
-  constructor(key: TKey) {
+  readonly params?: TParams
+
+  constructor(key: TKey, params?: TParams) {
     super(key)
     this.name = 'InputProblem'
+    this.params = params
   }
 }
 
@@ -26,6 +29,6 @@ export function describeError(error: unknown, t: TFunction): string {
   if (error instanceof FileTooLargeError) {
     return t('common.fileTooLarge', { max: `${MAX_FILE_BYTES / 1024 / 1024} MB` })
   }
-  if (error instanceof InputProblem) return t(error.message as TKey)
+  if (error instanceof InputProblem) return t(error.message as TKey, error.params)
   return t('errors.INTERNAL')
 }

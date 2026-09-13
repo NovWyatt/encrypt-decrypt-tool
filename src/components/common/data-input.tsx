@@ -21,6 +21,9 @@ interface DataInputProps {
   badge?: ReactNode
   onError: (error: unknown) => void
   onSubmit?: () => void
+  /** Smaller text area, for secondary inputs such as a signature. */
+  compact?: boolean
+  binaryNotice?: string
 }
 
 const DISPLAY_LIMIT = 400_000
@@ -35,6 +38,8 @@ export function DataInput({
   badge,
   onError,
   onSubmit,
+  compact,
+  binaryNotice,
 }: DataInputProps) {
   const { t, formatNumber } = useI18n()
   const id = useId()
@@ -145,11 +150,16 @@ export function DataInput({
 
       <div className="relative flex-1">
         {value.kind === 'binary' ? (
-          <div className="flex min-h-[220px] flex-col items-center justify-center gap-2 px-6 py-8 text-center">
+          <div
+            className={cn(
+              'flex flex-col items-center justify-center gap-2 px-6 text-center',
+              compact ? 'min-h-[120px] py-5' : 'min-h-[220px] py-8',
+            )}
+          >
             <span className="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
               <FileIcon className="size-5" />
             </span>
-            <p className="max-w-[46ch] text-sm text-muted-foreground">{t('aes.binaryNotice')}</p>
+            <p className="max-w-[46ch] text-sm text-muted-foreground">{binaryNotice ?? t('common.binaryNotice')}</p>
           </div>
         ) : (
           <textarea
@@ -179,7 +189,8 @@ export function DataInput({
             placeholder={placeholder}
             spellCheck={false}
             className={cn(
-              'scrollbar-thin block max-h-[440px] min-h-[220px] w-full resize-y bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80',
+              'block max-h-[440px] w-full resize-y scrollbar-thin bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80',
+              compact ? 'min-h-[120px]' : 'min-h-[220px]',
               monospace && 'text-cipher text-[0.8125rem]',
             )}
           />
@@ -203,7 +214,12 @@ export function DataInput({
         </AnimatePresence>
       </div>
 
-      <div className="flex min-h-14 flex-wrap items-center justify-between gap-3 border-t px-4 py-2.5">
+      <div
+        className={cn(
+          'flex flex-wrap items-center justify-between gap-3 border-t px-4',
+          action ? 'min-h-14 py-2.5' : 'min-h-10 py-2',
+        )}
+      >
         <p className="text-xs text-muted-foreground tabular-nums">
           {value.kind === 'text'
             ? t('common.chars', { count: formatNumber([...value.text].length) })

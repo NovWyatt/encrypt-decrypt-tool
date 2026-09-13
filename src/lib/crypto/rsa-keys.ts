@@ -35,11 +35,10 @@ import { CryptoError } from './errors'
 import { evpBytesToKey } from './openssl'
 import { randomBytes } from './random'
 
-export type RsaHash = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
-export type RsaAlgorithm = 'RSA-OAEP' | 'RSA-PSS' | 'RSASSA-PKCS1-v1_5'
+import type { RsaHash } from './rsa-params'
 
-export const HASH_BYTES: Record<RsaHash, number> = { 'SHA-1': 20, 'SHA-256': 32, 'SHA-384': 48, 'SHA-512': 64 }
-export const RSA_KEY_SIZES = [1024, 2048, 3072, 4096] as const
+export * from './rsa-params'
+export type RsaAlgorithm = 'RSA-OAEP' | 'RSA-PSS' | 'RSASSA-PKCS1-v1_5'
 
 export const PEM_LABELS = {
   spki: 'PUBLIC KEY',
@@ -479,6 +478,7 @@ function importDer(der: Uint8Array<ArrayBuffer>): ImportedKey {
       return { spki: spkiFromComponents(components), pkcs8: pkcs8FromComponents(components), source: 'der' }
     },
     () => ({ spki: spkiFromComponents(parsePkcs1Public(der)), source: 'der' }),
+    () => ({ spki: spkiFromCertificate(der), source: 'pem-certificate' }),
   ]
   for (const attempt of attempts) {
     try {

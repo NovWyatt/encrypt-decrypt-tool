@@ -1,22 +1,10 @@
 import { concatBytes, toBufferSource } from './encoding'
 import { decodeEnvelope, encodePrefix, type SignatureHeader } from './envelope'
 import { CryptoError } from './errors'
-import {
-  computeKeyId,
-  HASH_BYTES,
-  importPrivateKey,
-  importPublicKey,
-  modulusBits,
-  type RsaHash,
-  type RsaKeyMaterial,
-} from './rsa-keys'
+import { computeKeyId, importPrivateKey, importPublicKey, modulusBits, type RsaKeyMaterial } from './rsa-keys'
+import { HASH_BYTES, pssMaxSaltLength, type RsaHash, type SignatureScheme } from './rsa-params'
 
-export type SignatureScheme = 'RSA-PSS' | 'RSASSA-PKCS1-v1_5'
-
-/** emLen - hLen - 2, where emLen = ceil((modBits - 1) / 8) (RFC 8017, 9.1.1). */
-export function pssMaxSaltLength(bits: number, hash: RsaHash): number {
-  return Math.ceil((bits - 1) / 8) - HASH_BYTES[hash] - 2
-}
+export { pssMaxSaltLength, type SignatureScheme }
 
 function algorithmParams(scheme: SignatureScheme, saltLength: number): AlgorithmIdentifier | RsaPssParams {
   return scheme === 'RSA-PSS' ? { name: 'RSA-PSS', saltLength } : { name: 'RSASSA-PKCS1-v1_5' }

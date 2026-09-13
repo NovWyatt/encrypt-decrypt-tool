@@ -7,7 +7,8 @@ import {
   type Pbkdf2Params,
   type ScryptParams,
 } from '@/lib/crypto/kdf-params'
-import type { ContainerKind, InspectResult } from '@/lib/crypto/service'
+import type { InspectState } from '@/hooks/use-inspection'
+import type { ContainerKind } from '@/lib/crypto/service'
 import type { Level } from '@/stores/settings'
 
 /** Non-secret AES preferences remembered between visits. Passwords and keys are never stored. */
@@ -106,11 +107,6 @@ export interface RawDecryptOptions {
   keyBits: AesKeyBits
   iv: string
 }
-
-export type InspectState =
-  | { status: 'empty' }
-  | { status: 'ok'; result: InspectResult }
-  | { status: 'invalid'; error: unknown }
 
 export function encryptSecretKind(level: Level, options: AesOptions, secret: SecretState): SecretKind {
   if (level === 'basic' || options.format === 'openssl') return 'password'

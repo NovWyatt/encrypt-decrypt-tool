@@ -12,9 +12,18 @@ interface CopyButtonProps {
   variant?: 'outline' | 'ghost' | 'secondary' | 'default'
   size?: 'sm' | 'default' | 'xs' | 'icon-sm' | 'icon-xs' | 'icon'
   className?: string
+  onCopied?: () => void
 }
 
-export function CopyButton({ value, label, iconOnly, variant = 'outline', size = 'sm', className }: CopyButtonProps) {
+export function CopyButton({
+  value,
+  label,
+  iconOnly,
+  variant = 'outline',
+  size = 'sm',
+  className,
+  onCopied,
+}: CopyButtonProps) {
   const { t } = useI18n()
   const [copied, setCopied] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -25,6 +34,7 @@ export function CopyButton({ value, label, iconOnly, variant = 'outline', size =
     try {
       await navigator.clipboard.writeText(value)
       setCopied(true)
+      onCopied?.()
       clearTimeout(timer.current)
       timer.current = setTimeout(() => setCopied(false), 1600)
     } catch {

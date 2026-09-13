@@ -3,20 +3,10 @@ import { concatBytes, fromBase64, toBase64, toBufferSource } from './encoding'
 import { decodeEnvelope, encodePrefix, type DecodedEnvelope, type HybridHeader, type RsaHeader } from './envelope'
 import { CryptoError } from './errors'
 import { randomBytes } from './random'
-import {
-  computeKeyId,
-  HASH_BYTES,
-  importPrivateKey,
-  importPublicKey,
-  modulusBits,
-  type RsaHash,
-  type RsaKeyMaterial,
-} from './rsa-keys'
+import { computeKeyId, importPrivateKey, importPublicKey, modulusBits, type RsaKeyMaterial } from './rsa-keys'
+import { oaepMaxMessageBytes, type RsaHash } from './rsa-params'
 
-/** Largest message RSA-OAEP can encrypt directly: k - 2*hLen - 2 bytes (RFC 8017, 7.1.1). */
-export function oaepMaxMessageBytes(bits: number, hash: RsaHash): number {
-  return Math.max(0, Math.ceil(bits / 8) - 2 * HASH_BYTES[hash] - 2)
-}
+export { oaepMaxMessageBytes }
 
 export async function rsaOaepEncrypt(
   spki: Uint8Array,
