@@ -1,10 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>encryt-decryt-tool</title>
+    <title>Encrypt/Decrypt Tool</title>
+    <meta
+      name="description"
+      content="Mã hóa và giải mã văn bản, file bằng AES và RSA ngay trong trình duyệt. Không có dữ liệu nào rời khỏi máy bạn."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#f7f7f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)" />
+    <script>
+      // Apply the saved theme before first paint to avoid a light flash in dark mode.
+      ;(function () {
+        try {
+          var saved = JSON.parse(localStorage.getItem('edt.theme') || '"system"')
+          var dark = saved === 'dark' || (saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (error) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

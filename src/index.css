@@ -176,6 +176,11 @@
   samp {
     font-family: var(--font-mono);
   }
+  /* Password fields have their own show/hide toggle; Edge would add a second one. */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 }
 
 @layer utilities {

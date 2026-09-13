@@ -1,17 +1,9 @@
 import { cbc, ctr, ecb, gcm } from '@noble/ciphers/aes.js'
+import { BLOCK_BYTES, GCM_TAG_BYTES, type AesKeyBits, type AesMode } from './aes-params'
 import { toBufferSource } from './encoding'
 import { CryptoError } from './errors'
 
-export type AesMode = 'GCM' | 'CBC' | 'CTR' | 'ECB'
-export type AesKeyBits = 128 | 192 | 256
-
-export const AES_MODES: readonly AesMode[] = ['GCM', 'CBC', 'CTR', 'ECB']
-export const AES_KEY_SIZES: readonly AesKeyBits[] = [128, 192, 256]
-
-/** Default IV / nonce length per mode. ECB has none. */
-export const IV_LENGTH: Record<AesMode, number> = { GCM: 12, CBC: 16, CTR: 16, ECB: 0 }
-export const GCM_TAG_BYTES = 16
-export const BLOCK_BYTES = 16
+export * from './aes-params'
 
 export function isAuthenticatedMode(mode: AesMode): boolean {
   return mode === 'GCM'
