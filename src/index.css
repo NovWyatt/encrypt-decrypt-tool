@@ -1,0 +1,204 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+/* Be Vietnam Pro: designed for Vietnamese diacritics. JetBrains Mono: keys, hex, ciphertext. */
+@import '@fontsource/be-vietnam-pro/400.css';
+@import '@fontsource/be-vietnam-pro/500.css';
+@import '@fontsource/be-vietnam-pro/600.css';
+@import '@fontsource/be-vietnam-pro/700.css';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * One palette: zinc neutrals + a single cobalt accent.
+ * Semantic colors (success / warning / destructive) are reserved for state, never decoration.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.975 0.002 286);
+  --foreground: oklch(0.2 0.006 286);
+  --surface: oklch(0.993 0.001 286);
+  --card: oklch(0.993 0.001 286);
+  --card-foreground: oklch(0.2 0.006 286);
+  --popover: oklch(0.993 0.001 286);
+  --popover-foreground: oklch(0.2 0.006 286);
+
+  --primary: oklch(0.51 0.19 263);
+  --primary-foreground: oklch(0.985 0.01 263);
+  --secondary: oklch(0.945 0.004 286);
+  --secondary-foreground: oklch(0.24 0.006 286);
+  --muted: oklch(0.952 0.003 286);
+  --muted-foreground: oklch(0.49 0.012 286);
+  --accent: oklch(0.945 0.004 286);
+  --accent-foreground: oklch(0.24 0.006 286);
+
+  --destructive: oklch(0.55 0.2 27);
+  --success: oklch(0.52 0.12 158);
+  --warning: oklch(0.56 0.13 65);
+
+  --border: oklch(0.905 0.004 286);
+  --input: oklch(0.88 0.005 286);
+  --ring: oklch(0.51 0.19 263 / 55%);
+
+  --chart-1: oklch(0.8 0.1 255);
+  --chart-2: oklch(0.65 0.17 260);
+  --chart-3: oklch(0.51 0.19 263);
+  --chart-4: oklch(0.43 0.17 265);
+  --chart-5: oklch(0.36 0.13 267);
+
+  --sidebar: oklch(0.962 0.003 286);
+  --sidebar-foreground: oklch(0.24 0.006 286);
+  --sidebar-primary: oklch(0.51 0.19 263);
+  --sidebar-primary-foreground: oklch(0.985 0.01 263);
+  --sidebar-accent: oklch(0.925 0.005 286);
+  --sidebar-accent-foreground: oklch(0.2 0.006 286);
+  --sidebar-border: oklch(0.905 0.004 286);
+  --sidebar-ring: oklch(0.51 0.19 263 / 55%);
+}
+
+.dark {
+  --background: oklch(0.16 0.005 286);
+  --foreground: oklch(0.955 0.003 286);
+  --surface: oklch(0.198 0.006 286);
+  --card: oklch(0.198 0.006 286);
+  --card-foreground: oklch(0.955 0.003 286);
+  --popover: oklch(0.215 0.006 286);
+  --popover-foreground: oklch(0.955 0.003 286);
+
+  --primary: oklch(0.72 0.13 262);
+  --primary-foreground: oklch(0.17 0.03 265);
+  --secondary: oklch(0.26 0.006 286);
+  --secondary-foreground: oklch(0.955 0.003 286);
+  --muted: oklch(0.245 0.006 286);
+  --muted-foreground: oklch(0.7 0.012 286);
+  --accent: oklch(0.27 0.006 286);
+  --accent-foreground: oklch(0.955 0.003 286);
+
+  --destructive: oklch(0.7 0.17 25);
+  --success: oklch(0.74 0.12 158);
+  --warning: oklch(0.8 0.12 75);
+
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.72 0.13 262 / 55%);
+
+  --chart-1: oklch(0.8 0.1 255);
+  --chart-2: oklch(0.72 0.13 262);
+  --chart-3: oklch(0.6 0.16 263);
+  --chart-4: oklch(0.5 0.16 265);
+  --chart-5: oklch(0.42 0.13 267);
+
+  --sidebar: oklch(0.18 0.005 286);
+  --sidebar-foreground: oklch(0.9 0.004 286);
+  --sidebar-primary: oklch(0.72 0.13 262);
+  --sidebar-primary-foreground: oklch(0.17 0.03 265);
+  --sidebar-accent: oklch(0.25 0.006 286);
+  --sidebar-accent-foreground: oklch(0.955 0.003 286);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.72 0.13 262 / 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 28%, transparent);
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  /* Long base64 / hex strings must wrap anywhere without overflowing their panel. */
+  .text-cipher {
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 18%, transparent) transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
