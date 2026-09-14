@@ -1,4 +1,4 @@
-import { expect, openApp, test, view } from './fixtures.ts'
+import { expect, goTo, openApp, test, view } from './fixtures.ts'
 
 const PASSWORD = 'mat-khau-kiem-tra-2026'
 
@@ -42,7 +42,7 @@ test('RSA and signatures work with a key pair generated in the browser', async (
 
   // Navigate inside the app: the private key lives only in this page's memory.
   const message = 'Tin nhắn RSA cho bài kiểm thử.'
-  await page.getByRole('link', { name: 'Mã hóa RSA' }).click()
+  await goTo(page, 'Mã hóa RSA')
   const rsa = view(page)
   const recipient = rsa.getByRole('checkbox', { name: /Khóa kiểm thử/ })
   if (!(await recipient.isChecked())) await recipient.check()
@@ -54,9 +54,9 @@ test('RSA and signatures work with a key pair generated in the browser', async (
   await expect(rsa.getByRole('status').getByText('Đã giải mã', { exact: true })).toBeVisible()
   await expect(rsa.locator('pre')).toHaveText(message)
 
-  await page.getByRole('link', { name: 'Chữ ký số' }).click()
+  await goTo(page, 'Chữ ký số')
   const sign = view(page)
-  await sign.locator('textarea').first().fill('Văn bản cần ký.')
+  await sign.getByLabel('Nội dung cần ký').fill('Văn bản cần ký.')
   await sign.getByRole('button', { name: 'Ký', exact: true }).click()
   await expect(sign.getByRole('status').getByText('Đã ký', { exact: true })).toBeVisible()
   await sign.getByRole('button', { name: 'Chuyển sang xác minh' }).click()

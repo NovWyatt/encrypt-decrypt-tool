@@ -39,6 +39,15 @@ export function view(page: Page) {
   return page.locator('main > :not([hidden])')
 }
 
+/**
+ * Follows a sidebar link and waits for its page to show. The route changes on `hashchange`, a task after the click,
+ * so acting straight away would reach the page being left.
+ */
+export async function goTo(page: Page, name: string) {
+  await page.getByRole('navigation').getByRole('link', { name, exact: true }).click()
+  await expect(view(page).getByRole('heading', { level: 1, name, exact: true })).toBeVisible()
+}
+
 /** Opens a route with preset settings and waits until the page and its fonts are ready. */
 export async function openApp(page: Page, route: string, settings: AppSettings = {}) {
   const { level = 'basic', lang = 'vi', theme = 'light', storage = {} } = settings

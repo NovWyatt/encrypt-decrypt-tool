@@ -1,6 +1,6 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
-import { expect, openApp, test, view } from './fixtures.ts'
+import { expect, goTo, openApp, test, view } from './fixtures.ts'
 import { LEVELS, PAGES } from './pages.ts'
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']
@@ -70,7 +70,7 @@ test('results, menus and dialogs have no axe violations', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.getByRole('menu')).toBeHidden()
 
-  await page.getByRole('link', { name: 'Kho khóa RSA' }).click()
+  await goTo(page, 'Kho khóa RSA')
   for (const name of ['Tạo cặp khóa', 'Nhập khóa']) {
     await view(page).getByRole('button', { name }).first().click()
     await expect(page.getByRole('dialog')).toBeVisible()
