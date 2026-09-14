@@ -43,9 +43,7 @@ function StrengthMeter({ password }: { password: string }) {
           />
         ))}
       </div>
-      <span className="min-w-16 text-right text-xs font-medium text-muted-foreground">
-        {t(STRENGTH_KEYS[score])}
-      </span>
+      <span className="min-w-16 text-right text-xs font-medium text-muted-foreground">{t(STRENGTH_KEYS[score])}</span>
     </div>
   )
 }
@@ -112,7 +110,11 @@ export function PasswordField({
         </InputGroupAddon>
       </InputGroup>
       {showStrength && <StrengthMeter password={value} />}
-      {error ? <FieldError>{error}</FieldError> : hint && <FieldDescription className="text-xs">{hint}</FieldDescription>}
+      {error ? (
+        <FieldError>{error}</FieldError>
+      ) : (
+        hint && <FieldDescription className="text-xs">{hint}</FieldDescription>
+      )}
     </Field>
   )
 }
@@ -182,7 +184,11 @@ export function KeyField({ label, bits, value, onChange, hint, error, allowGener
           )}
         </InputGroupAddon>
       </InputGroup>
-      {error ? <FieldError>{error}</FieldError> : hint && <FieldDescription className="text-xs">{hint}</FieldDescription>}
+      {error ? (
+        <FieldError>{error}</FieldError>
+      ) : (
+        hint && <FieldDescription className="text-xs">{hint}</FieldDescription>
+      )}
     </Field>
   )
 }

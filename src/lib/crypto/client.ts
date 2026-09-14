@@ -5,7 +5,9 @@ import type * as Service from './service'
 type ServiceModule = typeof Service
 type FunctionKeys<T> = { [K in keyof T]: T[K] extends (...args: never[]) => unknown ? K : never }[keyof T]
 export type ServiceName = FunctionKeys<ServiceModule>
-type ServiceFn<K extends ServiceName> = ServiceModule[K] extends (...args: infer A) => infer R ? { args: A; result: Awaited<R> } : never
+type ServiceFn<K extends ServiceName> = ServiceModule[K] extends (...args: infer A) => infer R
+  ? { args: A; result: Awaited<R> }
+  : never
 
 type Result<T> = { ok: true; value: T } | { ok: false; error: SerializedCryptoError }
 
@@ -64,7 +66,9 @@ export async function callCrypto<K extends ServiceName>(
     throw new CryptoError(result.error.code, result.error.message, result.error.details)
   }
   const service = await import('./service')
-  const fn = service[name] as unknown as (...a: ServiceFn<K>['args']) => ServiceFn<K>['result'] | Promise<ServiceFn<K>['result']>
+  const fn = service[name] as unknown as (
+    ...a: ServiceFn<K>['args']
+  ) => ServiceFn<K>['result'] | Promise<ServiceFn<K>['result']>
   try {
     return await fn(...args)
   } catch (error) {

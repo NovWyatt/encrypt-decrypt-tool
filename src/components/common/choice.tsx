@@ -69,7 +69,13 @@ export function ChoiceCards<T extends string>({
   )
 }
 
-export function Tag({ tone = 'neutral', children }: { tone?: 'neutral' | 'good' | 'bad' | 'warn'; children: ReactNode }) {
+export function Tag({
+  tone = 'neutral',
+  children,
+}: {
+  tone?: 'neutral' | 'good' | 'bad' | 'warn'
+  children: ReactNode
+}) {
   return (
     <span
       className={cn(
