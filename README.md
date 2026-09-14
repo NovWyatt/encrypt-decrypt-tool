@@ -153,7 +153,7 @@ npm run preview
 
 `dist/` chạy được trên bất kỳ máy chủ web tĩnh nào, kể cả khi đặt trong thư mục con (ví dụ GitHub Pages của một repo), vì ứng dụng dùng đường dẫn tương đối và định tuyến bằng dấu `#`. Trình duyệt không cho mở thẳng file `index.html` từ ổ đĩa (`file://`), nên hãy dùng `npm run preview` hoặc một máy chủ tĩnh.
 
-Với mỗi commit và pull request, GitHub Actions chạy toàn bộ phần kiểm tra chất lượng bên dưới ([.github/workflows/ci.yml](.github/workflows/ci.yml)). Cloudflare Pages tự dựng và đăng mỗi commit trên nhánh `main`, và tạo bản xem thử riêng cho các nhánh khác. Địa chỉ cũ trên GitHub Pages chỉ còn một trang chuyển hướng sang địa chỉ mới, giữ nguyên trang đang mở ([.github/workflows/pages-redirect.yml](.github/workflows/pages-redirect.yml)).
+Với mỗi commit và pull request, GitHub Actions chạy toàn bộ phần kiểm tra chất lượng bên dưới ([.github/workflows/ci.yml](.github/workflows/ci.yml)). Commit trên nhánh `main` qua hết thì chính bản dựng vừa kiểm tra được đăng lên Cloudflare Pages bằng Wrangler; nếu có bước không qua, trang giữ nguyên bản cũ. Địa chỉ cũ trên GitHub Pages chỉ còn một trang chuyển hướng sang địa chỉ mới, giữ nguyên trang đang mở ([.github/workflows/pages-redirect.yml](.github/workflows/pages-redirect.yml)).
 
 ## Kiểm tra chất lượng
 
