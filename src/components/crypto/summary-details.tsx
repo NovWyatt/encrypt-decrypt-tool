@@ -13,9 +13,11 @@ export function KeyReference({ id }: { id: string }) {
   const key = keys.find((item) => item.id === id)
   return (
     <span className="inline-flex min-w-0 items-center gap-2">
-      <KeyIdenticon id={id} className="size-5 rounded" />
-      <span className="min-w-0">
-        {key && <span className="mr-1.5 font-sans text-[0.8125rem] font-medium">{key.name}</span>}
+      <KeyIdenticon id={id} className="size-5 shrink-0 rounded" />
+      {/* Names are user text and may have no spaces at all, so they break anywhere rather than widen the page. */}
+      <span className="min-w-0 wrap-anywhere">
+        {/* The space lets a line break between name and ID, instead of inside the first ID group. */}
+        {key && <span className="mr-1 font-sans text-[0.8125rem] font-medium">{key.name}</span>}{' '}
         <span className="font-mono text-xs text-muted-foreground">{groupHex(id, 4)}</span>
       </span>
     </span>

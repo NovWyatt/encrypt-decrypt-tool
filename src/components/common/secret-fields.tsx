@@ -100,7 +100,7 @@ export function PasswordField({
           placeholder={placeholder}
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={describedBy}
-          className={cn(visible && value && 'font-mono text-[0.8125rem]')}
+          className={cn(visible && value && 'font-mono md:text-[0.8125rem]')}
         />
         <InputGroupAddon align="inline-end">
           <IconAction label={visible ? t('common.hide') : t('common.show')} onClick={() => setVisible((v) => !v)}>
@@ -182,7 +182,7 @@ export function KeyField({ label, bits, value, onChange, hint, error, allowGener
           spellCheck={false}
           aria-invalid={Boolean(error) || status === 'bad' || undefined}
           aria-describedby={describedBy}
-          className="font-mono text-[0.8125rem]"
+          className="font-mono md:text-[0.8125rem]"
         />
         <InputGroupAddon align="inline-end">
           <IconAction label={visible ? t('common.hide') : t('common.show')} onClick={() => setVisible((v) => !v)}>

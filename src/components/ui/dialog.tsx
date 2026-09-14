@@ -3,6 +3,7 @@ import { cn } from 'cn'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 
 import { Button } from '@/components/ui/button'
+import { revealFocused } from '@/lib/reveal-focus'
 import { XIcon } from '@phosphor-icons/react'
 
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
@@ -39,6 +40,7 @@ function DialogContent({
   children,
   showCloseButton = true,
   closeLabel = 'Close',
+  onFocus,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
@@ -49,8 +51,14 @@ function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
+        onFocus={(event) => {
+          revealFocused(event)
+          onFocus?.(event)
+        }}
         className={cn(
-          'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          // Scrolls inside itself on short screens (phones held sideways, zoomed pages) instead of running off both edges.
+          // The scroll padding keeps focused fields clear of the pinned footer: two stacked buttons, or one row from sm.
+          'fixed top-1/2 left-1/2 z-50 grid max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 scroll-pb-28 gap-4 overflow-y-auto overscroll-contain rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none has-data-[slot=dialog-footer]:pb-0 sm:max-w-sm sm:scroll-pb-18 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
           className,
         )}
         {...props}
@@ -85,7 +93,10 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        '-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end',
+        // Pinned to the bottom while the dialog scrolls, on an opaque tint so content does not show through.
+        // It replaces the content's bottom padding rather than pulling into it with a negative margin: a sticky box
+        // is kept inside its scroller's padding, which would lift the footer off the bottom edge.
+        'sticky bottom-0 -mx-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-[color-mix(in_oklab,var(--muted)_50%,var(--popover))] p-4 sm:flex-row sm:justify-end',
         className,
       )}
       {...props}

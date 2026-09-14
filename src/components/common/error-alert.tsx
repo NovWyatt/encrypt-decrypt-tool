@@ -12,7 +12,8 @@ export function ErrorAlert({ error, action }: { error: unknown; action?: ReactNo
       className="border-destructive/25 bg-destructive/[0.04] px-3 py-2.5 dark:bg-destructive/10"
     >
       <WarningCircleIcon weight="fill" />
-      <AlertTitle className="leading-snug">{describeError(error, t)}</AlertTitle>
+      {/* Messages can quote key or file names, which may have no spaces to wrap at. */}
+      <AlertTitle className="leading-snug wrap-anywhere">{describeError(error, t)}</AlertTitle>
       {action && <AlertDescription className="mt-1.5">{action}</AlertDescription>}
     </Alert>
   )

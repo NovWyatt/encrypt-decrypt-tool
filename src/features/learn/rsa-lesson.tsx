@@ -123,7 +123,7 @@ function DigitsField({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           onChange={(event) => onChange(event.target.value.replace(/\D/g, '').slice(0, 40))}
-          className="font-mono text-[0.8125rem] tabular-nums"
+          className="font-mono tabular-nums md:text-[0.8125rem]"
         />
         {children}
       </div>
@@ -284,7 +284,7 @@ function CharacterStep({ number, rsaKey }: { number: number; rsaKey: TextbookKey
             while (utf8Encode(next).length > MAX_TEXT_BYTES) next = next.slice(0, -1)
             setEdited(next)
           }}
-          className="font-mono text-[0.8125rem]"
+          className="font-mono md:text-[0.8125rem]"
         />
       </Field>
       {n <= 255n ? (
@@ -594,7 +594,7 @@ export function RsaLesson() {
   )
 
   return (
-    <div className="grid items-start gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
       <div ref={asideRef} className={cn(asideFits && 'xl:sticky xl:top-6')}>
         {aside}
       </div>

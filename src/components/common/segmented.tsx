@@ -63,7 +63,8 @@ export function Segmented<T extends string>({
             className={cn(
               'relative isolate inline-flex items-center justify-center rounded-md font-medium whitespace-nowrap text-muted-foreground transition-colors outline-none select-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:text-foreground forced-colors:data-[state=on]:text-[HighlightText] forced-colors:data-[state=on]:forced-color-adjust-none',
               SIZES[size],
-              fullWidth && 'flex-1',
+              // Full-width segments share the width evenly, so the padding only limits how far they can shrink.
+              fullWidth && 'flex-1 px-1.5',
             )}
           >
             {active && (

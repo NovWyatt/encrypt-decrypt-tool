@@ -94,7 +94,7 @@ export function KeysPage() {
               <EmptyTitle>{t('keys.emptyTitle')}</EmptyTitle>
               <EmptyDescription className="max-w-[48ch]">{t('keys.emptyBody')}</EmptyDescription>
             </EmptyHeader>
-            <EmptyContent className="flex-row justify-center">
+            <EmptyContent className="flex-row flex-wrap justify-center">
               <Button onClick={() => setDialog('generate')}>
                 <KeyIcon weight="bold" />
                 {t('keys.generate')}
@@ -107,7 +107,7 @@ export function KeysPage() {
           </Empty>
         </Panel>
       ) : (
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
           <Panel className="overflow-hidden">
             <div className="flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2">
               <h2 className="text-sm font-semibold">{t('keys.listTitle')}</h2>
@@ -165,7 +165,8 @@ function KeyRow({ ringKey, selected, onSelect }: { ringKey: RingKey; selected: b
         </span>
         {/* Two groups without a separator between them, so a wrap never leaves a dangling dot. */}
         <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="whitespace-nowrap">
+          {/* Truncates on the narrowest phones rather than running under the arrow; the details show the full ID. */}
+          <span className="truncate">
             RSA {ringKey.bits} <span aria-hidden>·</span>{' '}
             <span className="font-mono text-[0.6875rem]">{groupHex(ringKey.id, 4)}</span>
           </span>
@@ -234,7 +235,8 @@ function KeyDetails({ ringKey }: { ringKey: RingKey }) {
               />
             </form>
           ) : (
-            <h2 className="truncate text-base leading-8 font-semibold">{ringKey.name}</h2>
+            // The list truncates names, so the details show them whole.
+            <h2 className="py-1 text-base leading-6 font-semibold wrap-anywhere">{ringKey.name}</h2>
           )}
           <p className="text-xs text-muted-foreground">
             RSA {ringKey.bits} bit · {ringKey.pkcs8 ? t('keys.private') : t('keys.publicOnly')}
@@ -330,7 +332,7 @@ function KeyDetails({ ringKey }: { ringKey: RingKey }) {
       <AlertDialog open={confirm !== null} onOpenChange={(open) => !open && setConfirm(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
+            <AlertDialogTitle className="wrap-anywhere">
               {confirm === 'forget'
                 ? t('keys.forgetTitle', { name: ringKey.name })
                 : t('keys.deleteTitle', { name: ringKey.name })}

@@ -270,7 +270,7 @@ function TextDemo({ modes }: { modes: DemoMode[] }) {
               while (utf8Encode(next).length > MAX_TEXT_BYTES) next = next.slice(0, -1)
               setEdited(next)
             }}
-            className="font-mono text-[0.8125rem]"
+            className="font-mono md:text-[0.8125rem]"
           />
           <FieldDescription id="modes-text-hint" className="text-xs">
             {t('modes.textHint', { max: MAX_TEXT_BYTES })}

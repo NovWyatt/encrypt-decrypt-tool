@@ -97,8 +97,13 @@ export function MathDetails({
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="flex flex-col gap-2">
       <CollapsibleTrigger asChild>
-        <Button variant="ghost" size="sm" className="-ml-2 self-start text-muted-foreground hover:text-foreground">
-          <CaretDownIcon className={cn('transition-transform', !open && '-rotate-90')} />
+        {/* Long labels wrap on narrow screens, with the caret kept beside the first line. */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="-ml-2 h-auto min-h-7 max-w-full items-start self-start py-1 text-left whitespace-normal text-muted-foreground hover:text-foreground"
+        >
+          <CaretDownIcon className={cn('mt-0.5 transition-transform', !open && '-rotate-90')} />
           {label ?? (open ? t('learn.hideDetails') : t('learn.showDetails'))}
         </Button>
       </CollapsibleTrigger>
@@ -145,7 +150,8 @@ export function LessonTable({
 }) {
   return (
     <ScrollRegion label={caption} className={cn('rounded-lg border', className)}>
-      <table className="w-full border-collapse text-[0.8125rem]">
+      {/* Tighter cells on phones, so a three-column worked example fits without scrolling sideways. */}
+      <table className="w-full border-collapse text-[0.8125rem] max-sm:[&_td]:px-2 max-sm:[&_th]:px-2">
         <caption className="sr-only">{caption}</caption>
         <thead className="sticky top-0 z-10 bg-muted/95 text-xs text-muted-foreground backdrop-blur-sm">
           <tr>

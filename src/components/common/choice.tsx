@@ -122,7 +122,7 @@ export function NumberField({ label, value, onChange, min, max, step = 1, hint }
         }}
         onBlur={() => onChange(Math.min(max, Math.max(min, Math.round(value / step) * step || min)))}
         aria-describedby={hint ? `${id}-hint` : undefined}
-        className="h-8 font-mono text-[0.8125rem] tabular-nums"
+        className="h-8 font-mono tabular-nums md:text-[0.8125rem]"
       />
       {hint && (
         <FieldDescription id={`${id}-hint`} className="text-xs">

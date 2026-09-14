@@ -33,7 +33,7 @@ function PageFallback() {
         <Skeleton className="h-8 w-56" />
         <Skeleton className="h-4 w-full max-w-[520px]" />
       </div>
-      <div className="grid gap-5 lg:grid-cols-[minmax(300px,360px)_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)]">
+      <div className="grid gap-5 lg:grid-cols-[336px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)]">
         <Skeleton className="h-80 rounded-xl" />
         <Skeleton className="h-[480px] rounded-xl" />
       </div>

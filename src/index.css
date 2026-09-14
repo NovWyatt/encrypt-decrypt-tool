@@ -156,7 +156,8 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans antialiased;
+    /* Below lg the header sticks to the top; without room for it, focus and links scroll their target underneath. */
+    @apply scroll-pt-18 font-sans antialiased lg:scroll-pt-6;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: transparent;

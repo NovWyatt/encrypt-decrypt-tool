@@ -147,7 +147,7 @@ export function ImportKeyDialog({ open, onOpenChange, onImported }: ImportKeyDia
                     '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA…\n-----END PUBLIC KEY-----'
                   }
                   className={cn(
-                    'block h-48 w-full resize-none scrollbar-thin rounded-lg border border-input bg-transparent px-3 py-2.5 font-mono text-xs leading-relaxed break-all transition-colors outline-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30',
+                    'block h-48 w-full resize-none scrollbar-thin rounded-lg border border-input bg-transparent px-3 py-2.5 font-mono text-base leading-relaxed break-all transition-colors outline-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-xs dark:bg-input/30',
                     dragging && 'border-primary ring-3 ring-primary/20',
                   )}
                 />

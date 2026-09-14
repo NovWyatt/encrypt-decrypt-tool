@@ -78,9 +78,10 @@ export function PanelHeader({
     <div className={cn('flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2.5', className)}>
       <div className="flex min-w-0 items-center gap-2">
         {icon}
+        {/* Titles wrap rather than truncate: next to the actions on a phone, an ellipsis would hide what the panel is. */}
         <div className="min-w-0">
-          <h2 className="truncate text-sm font-semibold">{title}</h2>
-          {description && <p className="truncate text-xs text-muted-foreground">{description}</p>}
+          <h2 className="text-sm font-semibold text-balance">{title}</h2>
+          {description && <p className="text-xs text-pretty text-muted-foreground">{description}</p>}
         </div>
       </div>
       {actions && <div className="flex shrink-0 items-center gap-1">{actions}</div>}

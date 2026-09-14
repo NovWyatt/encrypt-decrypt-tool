@@ -124,7 +124,7 @@ export function RsaEncryptSettings({
           <SettingsSection title={t('rsa.hash')}>
             <HashPicker ariaLabel={t('rsa.hash')} value={options.hash} onChange={(hash) => onOptions({ hash })} />
             {tooSmall && (
-              <p className="text-xs leading-relaxed text-destructive">
+              <p className="text-xs leading-relaxed wrap-anywhere text-destructive">
                 {t('rsa.keyTooSmall', { name: tooSmall.name, bits: tooSmall.bits, hash: options.hash })}
               </p>
             )}

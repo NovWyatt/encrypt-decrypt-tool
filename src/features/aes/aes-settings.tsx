@@ -126,8 +126,9 @@ function KdfEditor({ options, onChange }: { options: AesOptions; onChange: (patc
       </Select>
       <p className="text-xs leading-relaxed text-muted-foreground">{t(KDF_HINT[options.kdfName])}</p>
 
+      {/* Bottom-aligned, so a label that wraps in a narrow column does not push its field out of line. */}
       {options.kdfName === 'Argon2id' && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 items-end gap-2">
           <NumberField
             label={t('aes.memory')}
             min={1}
@@ -152,7 +153,7 @@ function KdfEditor({ options, onChange }: { options: AesOptions; onChange: (patc
         </div>
       )}
       {options.kdfName === 'scrypt' && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 items-end gap-2">
           <NumberField
             label={`${t('aes.scryptN')} 2^`}
             min={10}
@@ -177,7 +178,7 @@ function KdfEditor({ options, onChange }: { options: AesOptions; onChange: (patc
         </div>
       )}
       {options.kdfName === 'PBKDF2' && (
-        <div className="grid grid-cols-[1fr_1.4fr] gap-2">
+        <div className="grid grid-cols-[1fr_1.4fr] items-end gap-2">
           <Field className="gap-1.5">
             <FieldLabel className="text-xs font-medium text-muted-foreground">{t('aes.hash')}</FieldLabel>
             <Select
@@ -255,7 +256,7 @@ function TextField({
         autoComplete="off"
         placeholder={placeholder}
         aria-describedby={hint ? `${id}-hint` : undefined}
-        className={cn('h-8', mono && 'font-mono text-[0.8125rem]')}
+        className={cn('h-8', mono && 'font-mono md:text-[0.8125rem]')}
       />
       {hint && (
         <FieldDescription id={`${id}-hint`} className="text-xs">

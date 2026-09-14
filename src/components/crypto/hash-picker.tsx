@@ -15,14 +15,18 @@ export function HashPicker({
   const { t } = useI18n()
   return (
     <>
-      <Segmented<RsaHash>
-        ariaLabel={ariaLabel}
-        size="sm"
-        fullWidth
-        value={value}
-        onValueChange={onChange}
-        options={RSA_HASHES.map((hash) => ({ value: hash, label: hash }))}
-      />
+      {/* The four names need about 16.5rem side by side; narrower panels get two rows. */}
+      <div className="@container">
+        <Segmented<RsaHash>
+          ariaLabel={ariaLabel}
+          size="sm"
+          fullWidth
+          value={value}
+          onValueChange={onChange}
+          options={RSA_HASHES.map((hash) => ({ value: hash, label: hash }))}
+          className="@max-[17rem]:grid @max-[17rem]:grid-cols-2"
+        />
+      </div>
       {value === 'SHA-1' && <p className="text-xs leading-relaxed text-warning">{t('rsa.sha1Legacy')}</p>}
     </>
   )

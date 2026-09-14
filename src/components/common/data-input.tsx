@@ -190,10 +190,11 @@ export function DataInput({
             spellCheck={false}
             aria-keyshortcuts={onSubmit ? 'Control+Enter Meta+Enter' : undefined}
             className={cn(
-              'block max-h-[440px] w-full resize-y scrollbar-thin bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80',
+              // 16px on phones: iOS Safari zooms the page into any smaller text field on focus.
+              'block max-h-[440px] w-full resize-y scrollbar-thin bg-transparent px-4 py-3 text-base leading-relaxed outline-none placeholder:text-muted-foreground/80 md:text-sm',
               compact ? 'min-h-[120px]' : 'min-h-[220px]',
               // The placeholder is prose: only real ciphertext gets the mono, break-anywhere style.
-              monospace && value.text && 'text-cipher text-[0.8125rem]',
+              monospace && value.text && 'text-cipher md:text-[0.8125rem]',
             )}
           />
         )}

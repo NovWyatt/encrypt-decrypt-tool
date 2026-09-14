@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useState, type ComponentProps, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Icon } from '@phosphor-icons/react'
 import {
   ArrowRightIcon,
@@ -22,6 +22,7 @@ import { Segmented } from '@/components/common/segmented'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
 import { fromHex, isValidUtf8, toBufferSource, toHex, utf8Encode } from '@/lib/crypto/encoding'
@@ -119,6 +120,26 @@ function StepButton({
   )
 }
 
+/**
+ * Hex entry that wraps instead of scrolling, so a whole block or key stays in view, and grows with its value.
+ * Two rows is the fallback height where field-sizing is not supported.
+ */
+function HexArea({ className, ...props }: ComponentProps<typeof Textarea>) {
+  return (
+    <Textarea
+      rows={2}
+      spellCheck={false}
+      autoComplete="off"
+      autoCapitalize="off"
+      className={cn(
+        'min-h-8 resize-none py-[3px] font-mono leading-6 break-all md:py-[5px] md:text-[0.8125rem] md:leading-5',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 function Timeline({ trace, current, onGo }: { trace: AesTrace; current: number; onGo: (index: number) => void }) {
   const { t } = useI18n()
   const step = trace.steps[current]
@@ -130,26 +151,32 @@ function Timeline({ trace, current, onGo }: { trace: AesTrace; current: number; 
 
   return (
     <div className="flex flex-col gap-2.5">
-      <div className="flex scrollbar-thin gap-1 overflow-x-auto pb-0.5">
-        {Array.from({ length: trace.rounds + 1 }, (_, round) => (
-          <button
-            key={round}
-            type="button"
-            onClick={() => jumpToRound(round)}
-            aria-label={t('aesLesson.round', { round })}
-            aria-current={round === step.round ? 'step' : undefined}
-            className={cn(
-              'grid h-8 min-w-6 flex-1 place-items-center rounded-md text-xs font-medium tabular-nums transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:min-w-8',
-              round === step.round
-                ? 'bg-primary text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
-                : round < step.round
-                  ? 'bg-primary/12 text-foreground hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30'
-                  : 'bg-muted text-muted-foreground hover:text-foreground',
-            )}
-          >
-            {round}
-          </button>
-        ))}
+      {/* One row once the rounds of AES-256 fit at a comfortable size, two balanced rows before that. */}
+      <div className="@container">
+        <div
+          style={{ '--round-columns': Math.ceil((trace.rounds + 1) / 2) } as CSSProperties}
+          className="grid grid-cols-[repeat(var(--round-columns),minmax(0,1fr))] gap-1 @lg:flex"
+        >
+          {Array.from({ length: trace.rounds + 1 }, (_, round) => (
+            <button
+              key={round}
+              type="button"
+              onClick={() => jumpToRound(round)}
+              aria-label={t('aesLesson.round', { round })}
+              aria-current={round === step.round ? 'step' : undefined}
+              className={cn(
+                'grid h-8 min-w-0 flex-1 place-items-center rounded-md text-xs font-medium tabular-nums transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+                round === step.round
+                  ? 'bg-primary text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
+                  : round < step.round
+                    ? 'bg-primary/12 text-foreground hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30'
+                    : 'bg-muted text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {round}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="flex flex-wrap gap-1.5">
         {roundSteps.map(({ item, index }) => (
@@ -619,16 +646,13 @@ export function AesLesson() {
                 onChange={(event) => setBlockText(event.target.value)}
               />
             ) : (
-              <Input
+              <HexArea
                 id="aes-lesson-block"
                 value={blockHex}
-                spellCheck={false}
-                autoComplete="off"
                 maxLength={32}
                 aria-invalid={blockHex.length !== 32 || undefined}
                 aria-describedby="aes-lesson-block-note"
                 onChange={(event) => setBlockHex(cleanHex(event.target.value).slice(0, 32))}
-                className="font-mono text-[0.8125rem]"
               />
             )}
             {format === 'hex' && blockHex.length !== 32 ? (
@@ -662,17 +686,14 @@ export function AesLesson() {
                 />
               )}
             </div>
-            <div className="flex gap-2">
-              <Input
+            <div className="flex items-start gap-2">
+              <HexArea
                 id="aes-lesson-key"
                 value={shownKey}
-                spellCheck={false}
-                autoComplete="off"
                 maxLength={keyBits / 4}
                 aria-invalid={!keyValue || undefined}
                 aria-describedby="aes-lesson-key-note"
                 onChange={(event) => setKeyHex(cleanHex(event.target.value).slice(0, keyBits / 4))}
-                className="font-mono text-[0.8125rem]"
               />
               <Tooltip>
                 <TooltipTrigger asChild>

@@ -13,7 +13,7 @@ function Brand() {
   return (
     <a
       href="#/aes"
-      className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="flex w-fit items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]">
         <LockKeyIcon weight="bold" className="size-4.5" />
@@ -133,7 +133,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           <SheetContent
             side="left"
             closeLabel={t('common.close')}
-            className="flex w-72 flex-col gap-0 bg-sidebar p-0"
+            // The sheet's own width rule is data-attribute specific, so the override needs the same variant.
+            // 18rem, less on the narrowest phones so the brand clears the close button and some page stays visible.
+            className="flex flex-col gap-0 bg-sidebar p-0 data-[side=left]:w-[min(18rem,calc(100%-3rem))]"
             onOpenAutoFocus={(event) => {
               // Radix skips links when choosing initial focus; the current page link is the natural start.
               event.preventDefault()
