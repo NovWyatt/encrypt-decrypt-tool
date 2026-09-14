@@ -1,3 +1,4 @@
+import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test as base, type Locator, type Page } from '@playwright/test'
 
 export { expect }
@@ -69,6 +70,35 @@ export async function watchResult(scope: Locator, badge: string) {
     badge,
   )
   return () => watch.evaluate(({ text }) => text)
+}
+
+const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']
+
+/**
+ * Runs axe on the current page and returns its violations in a form that reads well in a failed assertion. Waits for
+ * running animations first: a result that is still fading in would be measured at part of its contrast.
+ */
+export async function violations(page: Page, disabledRules: string[] = []) {
+  await page.evaluate(async () => {
+    const running = () =>
+      document
+        .getAnimations()
+        .filter(
+          (animation) =>
+            animation.playState === 'running' && animation.effect?.getComputedTiming().endTime !== Infinity,
+        )
+    // One animation can start another, such as an old result fading out before the new one fades in.
+    for (let pending = running(); pending.length > 0; pending = running()) {
+      await Promise.all(pending.map((animation) => animation.finished.catch(() => undefined)))
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    }
+  })
+  const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).disableRules(disabledRules).analyze()
+  return results.violations.map(({ id, help, nodes }) => ({
+    id,
+    help,
+    targets: nodes.map((node) => node.target.join(' ')),
+  }))
 }
 
 /** Opens a route with preset settings and waits until the page and its fonts are ready. */

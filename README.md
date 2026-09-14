@@ -58,12 +58,13 @@ Ba bài thực hành tương tác, chạy bằng chính dữ liệu bạn nhập
 - Dùng tốt trên điện thoại và máy tính bảng.
 - Dán văn bản hoặc kéo thả file (tối đa 128 MB), nhấn `Ctrl` + `Enter` (`⌘` + `Enter` trên macOS) để chạy nhanh.
 - Mỗi trang chỉ tải khi cần. Phần tính toán nặng như Argon2id hay tạo khóa RSA chạy trong Web Worker nên giao diện không bị đứng.
+- Nếu một trang không tải được, chẳng hạn vì mạng chập chờn hoặc công cụ vừa cập nhật khi tab đang mở, chỉ trang đó báo lỗi kèm nút tải lại; các trang khác vẫn dùng tiếp.
 
 ## Bảo mật và quyền riêng tư
 
 - **Không có máy chủ.** Mọi phép tính diễn ra trong trình duyệt. Font chữ và thư viện được đóng gói sẵn, trang không tải gì từ bên ngoài.
 - **Địa chỉ riêng:** trang chạy trên Cloudflare Pages với tên miền của riêng nó, nên không trang web nào khác đọc được kho khóa hay can thiệp vào công cụ theo cơ chế cùng nguồn gốc (same-origin) của trình duyệt.
-- **Header bảo mật:** bản dựng kèm file `_headers` (Cloudflare Pages và Netlify đọc được). File này đặt Content-Security-Policy chỉ cho chạy script của chính trang và chỉ cho kết nối về chính địa chỉ của nó, cấm trang khác nhúng công cụ vào iframe, và cho trình duyệt giữ lâu các file đã có mã băm trong tên.
+- **Header bảo mật:** bản dựng kèm file `_headers` (Cloudflare Pages và Netlify đọc được). File này đặt Content-Security-Policy chỉ cho chạy script của chính trang và chỉ cho kết nối về chính địa chỉ của nó, cấm trang khác nhúng công cụ vào iframe, và cho trình duyệt giữ lâu các file đã có mã băm trong tên. Đường dẫn không có trong bản dựng thì nhận mã 404 thật từ `404.html`, không bị lưu cache.
 - **Lưu gì trên máy:** chỉ các lựa chọn giao diện, tham số thuật toán và **khóa công khai** (trong `localStorage`). Mật khẩu, khóa riêng và nội dung văn bản không bao giờ được lưu.
 - **Khóa riêng chỉ nằm trong bộ nhớ** của tab đang mở và mất khi tải lại trang. Hãy tải xuống, tốt nhất ở dạng có mật khẩu bảo vệ, để giữ lại.
 - **Thư viện:** dùng WebCrypto của trình duyệt khi có thể. AES-192 và ECB (WebCrypto không hỗ trợ) dùng [@noble/ciphers](https://github.com/paulmillr/noble-ciphers); Argon2id và scrypt dùng [hash-wasm](https://github.com/Daninet/hash-wasm).
@@ -171,9 +172,10 @@ Bộ test đối chiếu với:
 - OpenSSL qua `node:crypto` với dữ liệu ngẫu nhiên, và lệnh `openssl` thật cho `enc`, `pkeyutl`, `dgst`, khóa có mật khẩu và chứng chỉ X.509. Nhóm test dùng lệnh `openssl` tự bỏ qua nếu máy chưa cài; có thể chỉ đường dẫn qua biến môi trường `OPENSSL_BIN`.
 - Các tình huống lỗi: sai mật khẩu, bản mã hoặc phần đầu bị sửa, thiếu AAD, tham số tạo khóa độc hại.
 
-Kiểm thử trên trình duyệt (thư mục `e2e/`) chạy bản dựng thật, kèm đúng các header bảo mật trong `dist/_headers`:
+Kiểm thử trên trình duyệt (thư mục `e2e/`) chạy bản dựng thật, kèm đúng các header bảo mật trong `dist/_headers` và cách Cloudflare Pages trả lời đường dẫn không tồn tại:
 
 - Mã hóa và giải mã AES, RSA, ký và xác minh chữ ký, thao tác qua giao diện như người dùng.
+- File không tồn tại nhận mã 404 không lưu cache. Trang không tải được mã của nó thì báo lỗi và cho tải lại, còn các trang khác vẫn giữ nội dung đang nhập.
 - Mọi trang, ở cả mức Cơ bản lẫn Nâng cao: không vi phạm quy tắc nào của axe-core cho WCAG 2.2 mức A, AA và best practice; không tràn hay chồng lấn bố cục ở độ rộng 320, 768, 1024 và 1280 px; hộp thoại vẫn dùng được trên màn hình rất thấp; viền popup và mục đang chọn vẫn rõ ở chế độ tương phản cao của Windows.
 - Lỗi console, lỗi JavaScript hoặc vi phạm Content-Security-Policy đều làm bài test thất bại.
 

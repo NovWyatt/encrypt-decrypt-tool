@@ -6,6 +6,10 @@ export const en: Dictionary = {
     short: 'EDT',
     localOnly: 'Runs entirely on your device. No data ever leaves the browser.',
     skipToContent: 'Skip to main content',
+    pageFailed: 'This page could not be loaded',
+    pageFailedBody:
+      'The connection may have dropped, or the tool was just updated. Reload the page to continue. Reloading clears private keys you have not saved and anything you have typed.',
+    reload: 'Reload page',
   },
   nav: {
     groupTools: 'Tools',

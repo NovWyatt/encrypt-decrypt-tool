@@ -33,7 +33,12 @@ const HEADERS: Record<string, string> = {
   'X-Frame-Options': 'DENY',
 }
 
-/** File names under assets/ carry a content hash, so they never change and can be cached for good. */
+/**
+ * File names under assets/ carry a content hash, so they never change and can be cached for good. A name that is not
+ * in the build, such as a chunk an open tab still expects after a deploy, must not be cached like that. public/404.html
+ * takes care of it: Cloudflare Pages then answers with a 404, and sends every 404 with `Cache-Control: no-store`.
+ * Without that page, Pages would send index.html with status 200 under this rule.
+ */
 const ASSET_CACHE = 'public, max-age=31536000, immutable'
 
 const INLINE_SCRIPT = /<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g

@@ -1,7 +1,10 @@
-import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
+import { Component, lazy, Suspense, useEffect, useState, type ComponentType, type ReactNode } from 'react'
+import { ArrowClockwiseIcon, WarningCircleIcon } from '@phosphor-icons/react'
 import { useRoute, type RouteId } from '@/app/routes'
 import { AppShell } from '@/components/layout/app-shell'
-import { PageContainer } from '@/components/common/page'
+import { PageContainer, PageHeader, Panel } from '@/components/common/page'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useI18n } from '@/i18n'
 import { warmUpCrypto } from '@/lib/crypto/client'
@@ -41,6 +44,48 @@ function PageFallback() {
   )
 }
 
+function PageLoadError({ route }: { route: RouteId }) {
+  const { t } = useI18n()
+  return (
+    <PageContainer>
+      <PageHeader title={t(`nav.${route}`)} />
+      <Panel as="div" role="alert">
+        <Empty className="min-h-[320px] gap-5 py-10">
+          <EmptyHeader>
+            <EmptyMedia variant="icon" className="size-10 rounded-xl bg-destructive/10 text-destructive">
+              <WarningCircleIcon weight="fill" className="size-5" />
+            </EmptyMedia>
+            <EmptyTitle className="text-base">{t('app.pageFailed')}</EmptyTitle>
+            <EmptyDescription>{t('app.pageFailedBody')}</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button size="lg" onClick={() => location.reload()}>
+              <ArrowClockwiseIcon />
+              {t('app.reload')}
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </Panel>
+    </PageContainer>
+  )
+}
+
+/**
+ * Stands in for a page that could not load, usually because the network dropped or a deploy replaced its chunk, so
+ * the other pages keep working. Reloading is left to the user: private keys and typed text live only in this tab.
+ */
+class PageBoundary extends Component<{ route: RouteId; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  render() {
+    return this.state.failed ? <PageLoadError route={this.props.route} /> : this.props.children
+  }
+}
+
 export default function App() {
   const route = useRoute()
   const { t } = useI18n()
@@ -50,8 +95,9 @@ export default function App() {
 
   useEffect(() => {
     warmUpCrypto()
-    // Fetch the other pages once the browser is idle: navigation stays instant, even offline later.
-    const preload = () => Object.values(LOADERS).forEach((load) => void load())
+    // Fetch the other pages once the browser is idle: navigation stays instant, even offline later. A page that fails
+    // to load here shows its own error when opened.
+    const preload = () => Object.values(LOADERS).forEach((load) => load().catch(() => undefined))
     if ('requestIdleCallback' in window) {
       const handle = requestIdleCallback(preload, { timeout: 3000 })
       return () => cancelIdleCallback(handle)
@@ -70,9 +116,11 @@ export default function App() {
         const Page = PAGES[id]
         return (
           <div key={id} hidden={id !== route} className="animate-in duration-300 fade-in">
-            <Suspense fallback={<PageFallback />}>
-              <Page />
-            </Suspense>
+            <PageBoundary route={id}>
+              <Suspense fallback={<PageFallback />}>
+                <Page />
+              </Suspense>
+            </PageBoundary>
           </div>
         )
       })}

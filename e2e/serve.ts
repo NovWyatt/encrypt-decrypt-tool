@@ -3,8 +3,9 @@ import { createServer } from 'node:http'
 import { extname, join, normalize, resolve, sep } from 'node:path'
 
 /**
- * Serves dist/ with the headers from dist/_headers applied the way Cloudflare Pages applies them, so tests run the
- * built app under its production Content-Security-Policy. Run `npm run build` first.
+ * Serves dist/ the way Cloudflare Pages does, so tests run the built app under its production Content-Security-Policy
+ * and caching: with the headers from dist/_headers, and with Pages' answer to a path that is not in the build. Run
+ * `npm run build` first.
  */
 const root = resolve(import.meta.dirname, '..', 'dist')
 const port = Number(process.env.PORT ?? 4173)
@@ -53,13 +54,22 @@ createServer((request, response) => {
   let file = normalize(join(root, path))
   if (file !== root && !file.startsWith(root + sep)) return response.writeHead(403).end()
   if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html')
-  if (path === '/_headers' || !existsSync(file)) return response.writeHead(404).end('Not found')
+  let status = 200
+  if (path === '/_headers' || !existsSync(file)) {
+    // Pages sends 404.html with status 404. A build without that page counts as a single-page app, and every missing
+    // path, scripts included, gets index.html.
+    const notFound = join(root, '404.html')
+    status = existsSync(notFound) ? 404 : 200
+    file = status === 404 ? notFound : join(root, 'index.html')
+  }
 
   const headers: Record<string, string> = { 'Content-Type': TYPES[extname(file)] ?? 'application/octet-stream' }
   // Like Cloudflare, every matching rule applies, and a header set twice has its values joined with a comma.
   for (const rule of rules.filter(({ pattern }) => pattern.test(path))) {
     for (const [name, value] of rule.headers) headers[name] = headers[name] ? `${headers[name]}, ${value}` : value
   }
-  response.writeHead(200, headers)
+  // Pages replaces any Cache-Control from _headers on a 404, so a missing file is never cached.
+  if (status === 404) headers['Cache-Control'] = 'no-store'
+  response.writeHead(status, headers)
   createReadStream(file).pipe(response)
 }).listen(port, () => console.log(`Serving dist/ with its _headers on http://localhost:${port}`))

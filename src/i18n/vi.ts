@@ -4,6 +4,10 @@ export const vi = {
     short: 'EDT',
     localOnly: 'Chạy hoàn toàn trên máy bạn. Không có dữ liệu nào rời khỏi trình duyệt.',
     skipToContent: 'Bỏ qua, tới nội dung chính',
+    pageFailed: 'Không tải được trang này',
+    pageFailedBody:
+      'Có thể mạng vừa bị gián đoạn hoặc công cụ vừa được cập nhật. Hãy tải lại trang để dùng tiếp. Khi tải lại, khóa riêng chưa lưu và nội dung đang nhập sẽ mất.',
+    reload: 'Tải lại trang',
   },
   nav: {
     groupTools: 'Công cụ',
