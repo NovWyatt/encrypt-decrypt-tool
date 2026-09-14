@@ -3,12 +3,13 @@ import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { hostingHeaders } from './vite-plugins/hosting-headers.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
   // Relative asset URLs let the built folder be served from any path, such as a GitHub Pages project site.
   base: './',
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), hostingHeaders()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

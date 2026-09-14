@@ -3,6 +3,9 @@ import { armor, concatBytes, dearmorAll, fromBase64, readUint16BE, uint16BE, utf
 import { CryptoError } from './errors'
 import { validateKdfParams, type KdfParams } from './kdf'
 
+// Without this, Zod probes for eval with Function(''), which the site's Content-Security-Policy reports as a violation.
+z.config({ jitless: true })
+
 /**
  * EDT container, version 1.
  *

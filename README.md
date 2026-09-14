@@ -62,6 +62,7 @@ Ba bài thực hành tương tác, chạy bằng chính dữ liệu bạn nhập
 ## Bảo mật và quyền riêng tư
 
 - **Không có máy chủ.** Mọi phép tính diễn ra trong trình duyệt. Font chữ và thư viện được đóng gói sẵn, trang không tải gì từ bên ngoài.
+- **Header bảo mật:** bản dựng kèm file `_headers` (Cloudflare Pages và Netlify đọc được). File này đặt Content-Security-Policy chỉ cho chạy script của chính trang và chỉ cho kết nối về chính địa chỉ của nó, cấm trang khác nhúng công cụ vào iframe, và cho trình duyệt giữ lâu các file đã có mã băm trong tên.
 - **Lưu gì trên máy:** chỉ các lựa chọn giao diện, tham số thuật toán và **khóa công khai** (trong `localStorage`). Mật khẩu, khóa riêng và nội dung văn bản không bao giờ được lưu.
 - **Khóa riêng chỉ nằm trong bộ nhớ** của tab đang mở và mất khi tải lại trang. Hãy tải xuống, tốt nhất ở dạng có mật khẩu bảo vệ, để giữ lại.
 - **Thư viện:** dùng WebCrypto của trình duyệt khi có thể. AES-192 và ECB (WebCrypto không hỗ trợ) dùng [@noble/ciphers](https://github.com/paulmillr/noble-ciphers); Argon2id và scrypt dùng [hash-wasm](https://github.com/Daninet/hash-wasm).
