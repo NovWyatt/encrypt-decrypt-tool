@@ -176,7 +176,7 @@ Kiểm thử trên trình duyệt (thư mục `e2e/`) chạy bản dựng thật
 - Mọi trang, ở cả mức Cơ bản lẫn Nâng cao: không vi phạm quy tắc nào của axe-core cho WCAG 2.2 mức A, AA và best practice; không tràn hay chồng lấn bố cục ở độ rộng 320, 768, 1024 và 1280 px; hộp thoại vẫn dùng được trên màn hình rất thấp; viền popup và mục đang chọn vẫn rõ ở chế độ tương phản cao của Windows.
 - Lỗi console, lỗi JavaScript hoặc vi phạm Content-Security-Policy đều làm bài test thất bại.
 
-Lần đầu chạy trên máy, cài trình duyệt cho Playwright bằng `npx playwright install chromium`, hoặc dùng Edge hay Chrome có sẵn qua biến môi trường `E2E_CHANNEL` (ví dụ `msedge`). Phần này cần Node.js 22.18 trở lên.
+Lần đầu chạy trên máy, cài trình duyệt cho Playwright bằng `npx playwright install chromium`, hoặc dùng Edge hay Chrome có sẵn qua biến môi trường `E2E_CHANNEL` (ví dụ `msedge`). Phần này cần Node.js 22.18 trở lên. Để kiểm thử trang đã đăng thay cho bản dựng trên máy, đặt biến `E2E_BASE_URL` (ví dụ `https://encrypt-decrypt-tool.pages.dev/`) rồi chạy `npx playwright test`.
 
 ## Công nghệ
 
