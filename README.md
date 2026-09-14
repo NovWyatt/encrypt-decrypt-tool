@@ -2,6 +2,8 @@
 
 Công cụ mã hóa và giải mã văn bản, file bằng **AES** và **RSA**, từ thiết lập an toàn có sẵn đến tùy chỉnh từng tham số. Mọi thứ chạy ngay trong trình duyệt trên máy bạn: không có máy chủ, không cần tài khoản, không gửi dữ liệu đi đâu.
 
+**Dùng ngay trên web:** https://novwyatt.github.io/encrypt-decrypt-tool/ (không cần cài đặt).
+
 ![Trang Mã hóa AES với bản mã vừa tạo](docs/screenshots/aes.png)
 
 Công tắc **Cơ bản / Nâng cao** ở cuối thanh bên (trên điện thoại nằm trong menu) áp dụng cho toàn bộ ứng dụng. Mức Cơ bản chỉ hỏi những gì cần thiết và tự chọn thuật toán an toàn; mức Nâng cao mở ra đầy đủ chế độ, hàm tạo khóa và định dạng.
@@ -148,6 +150,8 @@ npm run preview
 ```
 
 `dist/` chạy được trên bất kỳ máy chủ web tĩnh nào, kể cả khi đặt trong thư mục con (ví dụ GitHub Pages của một repo), vì ứng dụng dùng đường dẫn tương đối và định tuyến bằng dấu `#`. Trình duyệt không cho mở thẳng file `index.html` từ ổ đĩa (`file://`), nên hãy dùng `npm run preview` hoặc một máy chủ tĩnh.
+
+Mỗi lần có commit mới trên nhánh `main`, GitHub Actions chạy bộ test, dựng lại và đăng bản mới lên GitHub Pages ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). Nếu test không qua, trang giữ nguyên bản cũ.
 
 ## Kiểm tra chất lượng
 
