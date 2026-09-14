@@ -15,7 +15,7 @@ export function KeyReference({ id }: { id: string }) {
     <span className="inline-flex min-w-0 items-center gap-2">
       <KeyIdenticon id={id} className="size-5 rounded" />
       <span className="min-w-0">
-        {key && <span className="mr-1.5 font-sans font-medium">{key.name}</span>}
+        {key && <span className="mr-1.5 font-sans text-[0.8125rem] font-medium">{key.name}</span>}
         <span className="font-mono text-xs text-muted-foreground">{groupHex(id, 4)}</span>
       </span>
     </span>

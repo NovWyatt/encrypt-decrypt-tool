@@ -200,7 +200,7 @@ export function VerifySettings({
   const bits = keys.find((key) => key.id === verifierId)?.bits ?? FALLBACK_BITS
   const maxSalt = pssMaxSaltLength(bits, raw.hash)
 
-  let detected = '...'
+  let detected = t('aes.detectWaiting')
   if (inspection.status === 'invalid') detected = t('aes.detectInvalid')
   else if (result?.container === 'raw') detected = t('aes.detectRaw', { encoding: result.encoding })
   else if (result?.container === 'openssl') detected = t('aes.detectOpenssl')

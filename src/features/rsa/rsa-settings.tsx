@@ -191,7 +191,7 @@ export function RsaDecryptSettings({
   const recipients = summary?.recipients ?? []
   const matching = recipients.filter((recipient) => privateKeys.some((key) => key.id === recipient.keyId))
 
-  let detected = '...'
+  let detected = t('aes.detectWaiting')
   if (inspection.status === 'invalid') detected = t('aes.detectInvalid')
   else if (result?.container === 'raw') detected = t('aes.detectRaw', { encoding: result.encoding })
   else if (result?.container === 'openssl') detected = t('aes.detectOpenssl')

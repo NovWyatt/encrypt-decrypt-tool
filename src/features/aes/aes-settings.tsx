@@ -491,7 +491,10 @@ export function DecryptSettings({
   return (
     <Panel as="aside" className="overflow-hidden">
       <SettingsSection title={t('aes.detected')}>
-        <DetectionSummary recognized={result !== null} label={inspection.status === 'empty' ? '...' : detected}>
+        <DetectionSummary
+          recognized={result !== null}
+          label={inspection.status === 'empty' ? t('aes.detectWaiting') : detected}
+        >
           {summary?.kind === 'aes' && (
             <p className="mt-0.5 text-xs text-muted-foreground">
               {algorithmLabel(summary)}

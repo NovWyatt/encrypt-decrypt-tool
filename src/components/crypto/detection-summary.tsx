@@ -24,7 +24,7 @@ export function DetectionSummary({
         <MagnifyingGlassIcon weight="bold" className="size-4" />
       </span>
       <div className="min-w-0 pt-0.5">
-        <p className="text-sm font-medium">{label}</p>
+        <p className={cn('text-sm', recognized ? 'font-medium' : 'text-muted-foreground')}>{label}</p>
         {children}
       </div>
     </div>

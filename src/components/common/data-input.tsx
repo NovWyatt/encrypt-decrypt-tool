@@ -191,7 +191,8 @@ export function DataInput({
             className={cn(
               'block max-h-[440px] w-full resize-y scrollbar-thin bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80',
               compact ? 'min-h-[120px]' : 'min-h-[220px]',
-              monospace && 'text-cipher text-[0.8125rem]',
+              // The placeholder is prose: only real ciphertext gets the mono, break-anywhere style.
+              monospace && value.text && 'text-cipher text-[0.8125rem]',
             )}
           />
         )}

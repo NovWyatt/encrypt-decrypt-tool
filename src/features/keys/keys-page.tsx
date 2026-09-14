@@ -106,7 +106,7 @@ export function KeysPage() {
           </Empty>
         </Panel>
       ) : (
-        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(400px,460px)]">
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
           <Panel className="overflow-hidden">
             <div className="flex min-h-12 items-center justify-between gap-3 border-b px-4 py-2">
               <h2 className="text-sm font-semibold">{t('keys.listTitle')}</h2>
@@ -161,13 +161,18 @@ function KeyRow({ ringKey, selected, onSelect }: { ringKey: RingKey; selected: b
           <span className="truncate text-sm font-medium">{ringKey.name}</span>
           {ringKey.pkcs8 && !ringKey.privateSaved && <Tag tone="warn">{t('keys.unsaved')}</Tag>}
         </span>
-        <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-          <span>RSA {ringKey.bits}</span>
-          <span aria-hidden>·</span>
-          <span className="font-mono text-[0.6875rem]">{groupHex(ringKey.id, 4)}</span>
-          <span aria-hidden>·</span>
+        {/* Two groups without a separator between them, so a wrap never leaves a dangling dot. */}
+        <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <span className="whitespace-nowrap">
+            RSA {ringKey.bits} <span aria-hidden>·</span>{' '}
+            <span className="font-mono text-[0.6875rem]">{groupHex(ringKey.id, 4)}</span>
+          </span>
           <span className={cn('inline-flex items-center gap-1', ringKey.pkcs8 && 'text-foreground')}>
-            {ringKey.pkcs8 ? <LockKeyIcon weight="fill" className="size-3 text-primary" /> : null}
+            {ringKey.pkcs8 ? (
+              <LockKeyIcon weight="fill" className="size-3 text-primary" />
+            ) : (
+              <KeyIcon className="size-3" />
+            )}
             {ringKey.pkcs8 ? t('keys.private') : t('keys.publicOnly')}
           </span>
         </span>
@@ -183,7 +188,7 @@ function KeyRow({ ringKey, selected, onSelect }: { ringKey: RingKey; selected: b
 }
 
 function KeyDetails({ ringKey }: { ringKey: RingKey }) {
-  const { t, lang, formatNumber } = useI18n()
+  const { t, lang } = useI18n()
   const { level } = useSettings()
   const [renaming, setRenaming] = useState(false)
   const [draft, setDraft] = useState(ringKey.name)
@@ -230,7 +235,7 @@ function KeyDetails({ ringKey }: { ringKey: RingKey }) {
             <h2 className="truncate text-base leading-8 font-semibold">{ringKey.name}</h2>
           )}
           <p className="text-xs text-muted-foreground">
-            RSA {formatNumber(ringKey.bits)} bit · {ringKey.pkcs8 ? t('keys.private') : t('keys.publicOnly')}
+            RSA {ringKey.bits} bit · {ringKey.pkcs8 ? t('keys.private') : t('keys.publicOnly')}
           </p>
         </div>
         <DropdownMenu>
@@ -297,7 +302,8 @@ function KeyDetails({ ringKey }: { ringKey: RingKey }) {
               ),
             },
             { label: t('keys.fingerprint'), value: ringKey.fingerprint.replace(/^SHA256:/, ''), mono: true },
-            { label: t('keys.exponentShort'), value: formatNumber(ringKey.publicExponent) },
+            // An identifier rather than a quantity: 65537, never "65.537".
+            { label: t('keys.exponentShort'), value: String(ringKey.publicExponent) },
             {
               label: t('keys.origin'),
               value:

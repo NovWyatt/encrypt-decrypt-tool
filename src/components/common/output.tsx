@@ -58,7 +58,7 @@ export function OutputText({ text, cipher, className }: { text: string; cipher?:
     <pre
       tabIndex={0}
       className={cn(
-        'scrollbar-thin max-h-[440px] min-h-[160px] overflow-auto px-4 py-3 whitespace-pre-wrap outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
+        'max-h-[440px] min-h-[160px] scrollbar-thin overflow-auto px-4 py-3 whitespace-pre-wrap outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
         cipher ? 'text-cipher text-[0.8125rem] leading-relaxed' : 'font-sans text-sm leading-relaxed break-words',
         className,
       )}
@@ -74,13 +74,29 @@ export interface DetailRow {
   mono?: boolean
 }
 
+/** Keeps names such as "AES-256-GCM" on one line; browsers otherwise wrap right after a hyphen. */
+function keepHyphenatedWords(text: string): ReactNode {
+  if (!text.includes('-')) return text
+  return text.split(/(\S*-\S*)/).map((part, index) =>
+    part.includes('-') ? (
+      <span key={index} className="whitespace-nowrap">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  )
+}
+
 export function DetailsList({ rows }: { rows: DetailRow[] }) {
   return (
     <dl className="grid grid-cols-[minmax(92px,auto)_minmax(0,1fr)] gap-x-4 gap-y-2 text-[0.8125rem]">
       {rows.map((row) => (
         <div key={row.label} className="contents">
           <dt className="text-muted-foreground">{row.label}</dt>
-          <dd className={cn('min-w-0 break-words', row.mono && 'font-mono text-xs leading-5 break-all')}>{row.value}</dd>
+          <dd className={cn('min-w-0 break-words', row.mono && 'font-mono text-xs leading-5 break-all')}>
+            {typeof row.value === 'string' && !row.mono ? keepHyphenatedWords(row.value) : row.value}
+          </dd>
         </div>
       ))}
     </dl>

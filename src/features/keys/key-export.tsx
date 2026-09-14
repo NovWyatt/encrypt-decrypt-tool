@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { DownloadSimpleIcon, LockKeyIcon } from '@phosphor-icons/react'
+import { cn } from 'cn'
 import { Callout } from '@/components/common/callout'
 import { CopyButton } from '@/components/common/copy-button'
 import { ErrorAlert } from '@/components/common/error-alert'
@@ -167,7 +168,11 @@ export function KeyExport({ ringKey }: { ringKey: RingKey }) {
           <pre
             tabIndex={0}
             aria-label={t('keys.exportPreview')}
-            className="max-h-56 scrollbar-thin overflow-auto bg-muted/40 px-3 py-2.5 font-mono text-[0.6875rem] leading-relaxed break-all whitespace-pre-wrap outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+            className={cn(
+              'max-h-56 scrollbar-thin overflow-auto bg-muted/40 px-3 py-2.5 font-mono text-[0.6875rem] leading-relaxed outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
+              // PEM keeps its 64-column lines; single-line formats (OpenSSH, JWK values) wrap anywhere.
+              current.format.endsWith('-pem') ? 'whitespace-pre' : 'break-all whitespace-pre-wrap',
+            )}
           >
             {current.text}
           </pre>
