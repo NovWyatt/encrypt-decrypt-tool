@@ -2,7 +2,7 @@
 
 Công cụ mã hóa và giải mã văn bản, file bằng **AES** và **RSA**, từ thiết lập an toàn có sẵn đến tùy chỉnh từng tham số. Mọi thứ chạy ngay trong trình duyệt trên máy bạn: không có máy chủ, không cần tài khoản, không gửi dữ liệu đi đâu.
 
-**Dùng ngay trên web:** https://novwyatt.github.io/encrypt-decrypt-tool/ (không cần cài đặt).
+**Dùng ngay trên web:** https://encrypt-decrypt-tool.pages.dev/ (không cần cài đặt).
 
 ![Trang Mã hóa AES với bản mã vừa tạo](docs/screenshots/aes.png)
 
@@ -62,6 +62,7 @@ Ba bài thực hành tương tác, chạy bằng chính dữ liệu bạn nhập
 ## Bảo mật và quyền riêng tư
 
 - **Không có máy chủ.** Mọi phép tính diễn ra trong trình duyệt. Font chữ và thư viện được đóng gói sẵn, trang không tải gì từ bên ngoài.
+- **Địa chỉ riêng:** trang chạy trên Cloudflare Pages với tên miền của riêng nó, nên không trang web nào khác đọc được kho khóa hay can thiệp vào công cụ theo cơ chế cùng nguồn gốc (same-origin) của trình duyệt.
 - **Header bảo mật:** bản dựng kèm file `_headers` (Cloudflare Pages và Netlify đọc được). File này đặt Content-Security-Policy chỉ cho chạy script của chính trang và chỉ cho kết nối về chính địa chỉ của nó, cấm trang khác nhúng công cụ vào iframe, và cho trình duyệt giữ lâu các file đã có mã băm trong tên.
 - **Lưu gì trên máy:** chỉ các lựa chọn giao diện, tham số thuật toán và **khóa công khai** (trong `localStorage`). Mật khẩu, khóa riêng và nội dung văn bản không bao giờ được lưu.
 - **Khóa riêng chỉ nằm trong bộ nhớ** của tab đang mở và mất khi tải lại trang. Hãy tải xuống, tốt nhất ở dạng có mật khẩu bảo vệ, để giữ lại.
@@ -152,7 +153,7 @@ npm run preview
 
 `dist/` chạy được trên bất kỳ máy chủ web tĩnh nào, kể cả khi đặt trong thư mục con (ví dụ GitHub Pages của một repo), vì ứng dụng dùng đường dẫn tương đối và định tuyến bằng dấu `#`. Trình duyệt không cho mở thẳng file `index.html` từ ổ đĩa (`file://`), nên hãy dùng `npm run preview` hoặc một máy chủ tĩnh.
 
-Với mỗi commit và pull request, GitHub Actions chạy toàn bộ phần kiểm tra chất lượng bên dưới ([.github/workflows/ci.yml](.github/workflows/ci.yml)). Commit trên nhánh `main` qua hết thì bản dựng vừa kiểm tra được đăng lên GitHub Pages; nếu có bước không qua, trang giữ nguyên bản cũ.
+Với mỗi commit và pull request, GitHub Actions chạy toàn bộ phần kiểm tra chất lượng bên dưới ([.github/workflows/ci.yml](.github/workflows/ci.yml)). Cloudflare Pages tự dựng và đăng mỗi commit trên nhánh `main`, và tạo bản xem thử riêng cho các nhánh khác. Địa chỉ cũ trên GitHub Pages chỉ còn một trang chuyển hướng sang địa chỉ mới, giữ nguyên trang đang mở ([.github/workflows/pages-redirect.yml](.github/workflows/pages-redirect.yml)).
 
 ## Kiểm tra chất lượng
 
