@@ -1,39 +1,54 @@
-# Tests and builds the app, then publishes dist/ to GitHub Pages on every push to main.
-name: Deploy to GitHub Pages
+# Checks every push and pull request: lint, formatting, unit tests, the production build, and browser tests of that
+# build under its production headers. Pushes to main then publish the tested build to GitHub Pages.
+name: CI
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# One deployment at a time; a newer push waits rather than cancelling one that is already publishing.
+# A newer commit on a pull request replaces its running checks; runs on main finish so every publish is tested.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .node-version
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
       - run: npm test
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v5
+      - run: npx playwright install --with-deps --only-shell chromium
+      - run: npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 14
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
   deploy:
-    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: check
     runs-on: ubuntu-latest
     permissions:
       pages: write

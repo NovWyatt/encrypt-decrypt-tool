@@ -152,16 +152,17 @@ npm run preview
 
 `dist/` chạy được trên bất kỳ máy chủ web tĩnh nào, kể cả khi đặt trong thư mục con (ví dụ GitHub Pages của một repo), vì ứng dụng dùng đường dẫn tương đối và định tuyến bằng dấu `#`. Trình duyệt không cho mở thẳng file `index.html` từ ổ đĩa (`file://`), nên hãy dùng `npm run preview` hoặc một máy chủ tĩnh.
 
-Mỗi lần có commit mới trên nhánh `main`, GitHub Actions chạy bộ test, dựng lại và đăng bản mới lên GitHub Pages ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). Nếu test không qua, trang giữ nguyên bản cũ.
+Với mỗi commit và pull request, GitHub Actions chạy toàn bộ phần kiểm tra chất lượng bên dưới ([.github/workflows/ci.yml](.github/workflows/ci.yml)). Commit trên nhánh `main` qua hết thì bản dựng vừa kiểm tra được đăng lên GitHub Pages; nếu có bước không qua, trang giữ nguyên bản cũ.
 
 ## Kiểm tra chất lượng
 
-| Lệnh                   | Việc làm                                   |
-| ---------------------- | ------------------------------------------ |
-| `npm test`             | Chạy bộ test bằng Vitest                   |
-| `npm run typecheck`    | Kiểm tra kiểu TypeScript                   |
-| `npm run lint`         | Kiểm tra mã bằng oxlint                    |
-| `npm run format:check` | Kiểm tra định dạng mã bằng Prettier        |
+| Lệnh                   | Việc làm                                                          |
+| ---------------------- | ----------------------------------------------------------------- |
+| `npm test`             | Chạy bộ test bằng Vitest                                          |
+| `npm run test:e2e`     | Dựng bản production rồi kiểm thử trên trình duyệt bằng Playwright |
+| `npm run typecheck`    | Kiểm tra kiểu TypeScript                                          |
+| `npm run lint`         | Kiểm tra mã bằng oxlint                                           |
+| `npm run format:check` | Kiểm tra định dạng mã bằng Prettier                               |
 
 Bộ test đối chiếu với:
 
@@ -169,17 +170,26 @@ Bộ test đối chiếu với:
 - OpenSSL qua `node:crypto` với dữ liệu ngẫu nhiên, và lệnh `openssl` thật cho `enc`, `pkeyutl`, `dgst`, khóa có mật khẩu và chứng chỉ X.509. Nhóm test dùng lệnh `openssl` tự bỏ qua nếu máy chưa cài; có thể chỉ đường dẫn qua biến môi trường `OPENSSL_BIN`.
 - Các tình huống lỗi: sai mật khẩu, bản mã hoặc phần đầu bị sửa, thiếu AAD, tham số tạo khóa độc hại.
 
+Kiểm thử trên trình duyệt (thư mục `e2e/`) chạy bản dựng thật, kèm đúng các header bảo mật trong `dist/_headers`:
+
+- Mã hóa và giải mã AES, RSA, ký và xác minh chữ ký, thao tác qua giao diện như người dùng.
+- Mọi trang, ở cả mức Cơ bản lẫn Nâng cao: không vi phạm quy tắc nào của axe-core cho WCAG 2.2 mức A, AA và best practice; không tràn hay chồng lấn bố cục ở độ rộng 320, 768, 1024 và 1280 px; hộp thoại vẫn dùng được trên màn hình rất thấp; viền popup và mục đang chọn vẫn rõ ở chế độ tương phản cao của Windows.
+- Lỗi console, lỗi JavaScript hoặc vi phạm Content-Security-Policy đều làm bài test thất bại.
+
+Lần đầu chạy trên máy, cài trình duyệt cho Playwright bằng `npx playwright install chromium`, hoặc dùng Edge hay Chrome có sẵn qua biến môi trường `E2E_CHANNEL` (ví dụ `msedge`). Phần này cần Node.js 22.18 trở lên.
+
 ## Công nghệ
 
 Toàn bộ là phần mềm mã nguồn mở, miễn phí.
 
 - **Giao diện:** React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui trên nền Radix UI, Motion, Phosphor Icons, Sonner, font Be Vietnam Pro và JetBrains Mono.
 - **Mật mã:** WebCrypto, @noble/ciphers, @noble/hashes, hash-wasm, Comlink (Web Worker), Zod (kiểm tra phần đầu gói EDT).
-- **Công cụ:** Vitest, oxlint, Prettier.
+- **Công cụ:** Vitest, Playwright, axe-core, oxlint, Prettier.
 
 ## Cấu trúc thư mục
 
 ```text
+e2e/              Kiểm thử trên trình duyệt: luồng mã hóa, trợ năng, bố cục
 src/
 ├── app/          Định tuyến bằng dấu #
 ├── components/   Thành phần giao diện dùng chung: bố cục, ô nhập liệu, kết quả, shadcn/ui
