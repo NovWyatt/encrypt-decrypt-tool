@@ -9,6 +9,10 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    ignore:
+      # Node's types follow the Node version in .node-version; move both together by hand.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       # Minor and patch releases arrive together; each major release gets its own pull request.
       npm-minor-and-patch:
