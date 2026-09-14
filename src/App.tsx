@@ -1,18 +1,10 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
 import { useRoute, type RouteId } from '@/app/routes'
 import { AppShell } from '@/components/layout/app-shell'
-import { PageContainer, PageHeader } from '@/components/common/page'
+import { PageContainer } from '@/components/common/page'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useI18n } from '@/i18n'
 import { warmUpCrypto } from '@/lib/crypto/client'
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <PageContainer>
-      <PageHeader title={title} />
-    </PageContainer>
-  )
-}
 
 type PageModule = Promise<{ default: ComponentType }>
 
@@ -22,7 +14,7 @@ const LOADERS: Record<RouteId, () => PageModule> = {
   rsa: () => import('@/features/rsa/rsa-page').then((module) => ({ default: module.RsaPage })),
   sign: () => import('@/features/sign/sign-page').then((module) => ({ default: module.SignPage })),
   keys: () => import('@/features/keys/keys-page').then((module) => ({ default: module.KeysPage })),
-  learn: () => Promise.resolve({ default: () => <Placeholder title="Learn" /> }),
+  learn: () => import('@/features/learn/learn-page').then((module) => ({ default: module.LearnPage })),
 }
 
 const PAGES: Record<RouteId, ComponentType> = {
