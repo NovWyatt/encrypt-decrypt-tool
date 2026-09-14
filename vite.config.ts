@@ -6,6 +6,8 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Relative asset URLs let the built folder be served from any path, such as a GitHub Pages project site.
+  base: './',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

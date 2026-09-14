@@ -38,7 +38,7 @@ function subscribe(listener: () => void): () => void {
   return () => window.removeEventListener('hashchange', listener)
 }
 
-/** Hash routing keeps working when the built app is opened straight from disk (file://). */
+/** Hash routing needs no server rewrites, so the build works on any static host and under any sub-path. */
 export function useRoute(): RouteId {
   return useSyncExternalStore(subscribe, parseHash, () => DEFAULT_ROUTE)
 }
