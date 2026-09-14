@@ -1,0 +1,24 @@
+# Weekly update pull requests for npm packages and GitHub Actions; CI checks each one before it is merged.
+# New npm releases wait a week first, so a compromised version is usually pulled before it is proposed here.
+# Security updates for known vulnerabilities skip that wait.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      # Minor and patch releases arrive together; each major release gets its own pull request.
+      npm-minor-and-patch:
+        patterns: ['*']
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ['*']
