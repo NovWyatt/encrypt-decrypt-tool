@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Local-first AES and RSA encryption tool for text files, from basic to advanced.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

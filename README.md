@@ -190,3 +190,7 @@ src/
 │   └── crypto/   Lõi mật mã chạy trong Web Worker, kèm bộ test
 └── stores/       Cài đặt, giao diện sáng tối, kho khóa
 ```
+
+## Giấy phép
+
+Mã nguồn phát hành theo giấy phép [MIT](LICENSE): được dùng, sửa và chia sẻ lại tự do, kể cả cho mục đích thương mại, miễn là giữ lại thông báo bản quyền. Các thư viện đi kèm giữ giấy phép riêng của chúng.
