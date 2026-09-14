@@ -205,9 +205,49 @@
  * Highlight in their components.
  */
 @media (forced-colors: active) {
+  /*
+   * Popups are edged with a ring or set apart by their fill, so without an outline they merge into the page.
+   * Radix resets the outline inline on menus and selects, hence !important; placed first, so the focus
+   * outline still wins when a popup itself holds focus.
+   */
+  [data-slot='dialog-content'],
+  [data-slot='alert-dialog-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='dropdown-menu-sub-content'],
+  [data-slot='popover-content'],
+  [data-slot='select-content'],
+  [data-slot='tooltip-content'] {
+    outline: 1px solid CanvasText !important;
+  }
+
   :focus-visible {
     outline: 2px solid Highlight !important;
     outline-offset: 2px;
+  }
+
+  /*
+   * Menu and select items: outline-hidden turns into an outline around every item here, and the highlight is a
+   * background the theme drops. Highlight the item the way system menus do instead, which also marks focus.
+   */
+  :is(
+    [data-slot='dropdown-menu-item'],
+    [data-slot='dropdown-menu-checkbox-item'],
+    [data-slot='dropdown-menu-radio-item'],
+    [data-slot='dropdown-menu-sub-trigger'],
+    [data-slot='select-item']
+  ) {
+    outline: none !important;
+
+    &[data-highlighted] {
+      background-color: Highlight;
+      forced-color-adjust: none;
+    }
+
+    /* Descendants too: with the adjustment off, their own text colors would show on the highlight. */
+    &[data-highlighted],
+    &[data-highlighted] * {
+      color: HighlightText;
+    }
   }
 }
 
