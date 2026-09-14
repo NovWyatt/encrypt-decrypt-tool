@@ -22,7 +22,13 @@ export function RunButton({
         <Kbd>{IS_MAC ? '⌘' : 'Ctrl'}</Kbd>
         <Kbd>Enter</Kbd>
       </KbdGroup>
-      <Button size="lg" onClick={onClick} disabled={disabled} className="min-w-32 px-4">
+      {/* aria-disabled rather than disabled: disabling the focused button would drop keyboard focus to the page. */}
+      <Button
+        size="lg"
+        aria-disabled={disabled || undefined}
+        onClick={disabled ? undefined : onClick}
+        className="min-w-32 px-4 aria-disabled:opacity-50"
+      >
         <IconComponent weight="bold" />
         {label}
       </Button>

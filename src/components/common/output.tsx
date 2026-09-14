@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import type { Icon } from '@phosphor-icons/react'
 import { cn } from 'cn'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
@@ -32,12 +33,13 @@ function Elapsed({ startedAt }: { startedAt: number }) {
 }
 
 export function OutputRunning({ label, startedAt }: { label: string; startedAt: number }) {
+  // The result panel header announces the stage; the ticking timer stays out of the accessibility tree.
   return (
-    <div className="flex min-h-[220px] flex-col gap-4 p-4" aria-busy="true" aria-live="polite">
+    <div className="flex min-h-[220px] flex-col gap-4 p-4" aria-busy="true">
       <div className="flex items-center gap-2 text-sm font-medium">
         <Spinner className="size-4 text-primary" />
         <span>{label}</span>
-        <span className="text-xs font-normal text-muted-foreground">
+        <span className="text-xs font-normal text-muted-foreground" aria-hidden>
           <Elapsed startedAt={startedAt} />
         </span>
       </div>
@@ -53,18 +55,19 @@ export function OutputRunning({ label, startedAt }: { label: string; startedAt: 
 const DISPLAY_LIMIT = 200_000
 
 export function OutputText({ text, cipher, className }: { text: string; cipher?: boolean; className?: string }) {
+  const { t } = useI18n()
   const truncated = text.length > DISPLAY_LIMIT
   return (
-    <pre
-      tabIndex={0}
-      className={cn(
-        'max-h-[440px] min-h-[160px] scrollbar-thin overflow-auto px-4 py-3 whitespace-pre-wrap outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
-        cipher ? 'text-cipher text-[0.8125rem] leading-relaxed' : 'font-sans text-sm leading-relaxed break-words',
-        className,
-      )}
-    >
-      {truncated ? `${text.slice(0, DISPLAY_LIMIT)}\n…` : text}
-    </pre>
+    <ScrollRegion label={t('aes.resultTitle')} className={cn('max-h-[440px] min-h-[160px]', className)}>
+      <pre
+        className={cn(
+          'px-4 py-3 whitespace-pre-wrap',
+          cipher ? 'text-cipher text-[0.8125rem] leading-relaxed' : 'font-sans text-sm leading-relaxed break-words',
+        )}
+      >
+        {truncated ? `${text.slice(0, DISPLAY_LIMIT)}\n…` : text}
+      </pre>
+    </ScrollRegion>
   )
 }
 

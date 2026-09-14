@@ -141,7 +141,7 @@ function Timeline({ trace, current, onGo }: { trace: AesTrace; current: number; 
             className={cn(
               'grid h-8 min-w-6 flex-1 place-items-center rounded-md text-xs font-medium tabular-nums transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:min-w-8',
               round === step.round
-                ? 'bg-primary text-primary-foreground'
+                ? 'bg-primary text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
                 : round < step.round
                   ? 'bg-primary/12 text-foreground hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30'
                   : 'bg-muted text-muted-foreground hover:text-foreground',
@@ -161,7 +161,7 @@ function Timeline({ trace, current, onGo }: { trace: AesTrace; current: number; 
             className={cn(
               'h-7 rounded-full px-3 text-xs font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
               index === current
-                ? 'bg-foreground text-background'
+                ? 'bg-foreground text-background forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
                 : 'bg-muted text-muted-foreground hover:text-foreground',
             )}
           >
@@ -615,6 +615,7 @@ export function AesLesson() {
                 value={blockText}
                 spellCheck={false}
                 autoComplete="off"
+                aria-describedby="aes-lesson-block-note"
                 onChange={(event) => setBlockText(event.target.value)}
               />
             ) : (
@@ -625,14 +626,17 @@ export function AesLesson() {
                 autoComplete="off"
                 maxLength={32}
                 aria-invalid={blockHex.length !== 32 || undefined}
+                aria-describedby="aes-lesson-block-note"
                 onChange={(event) => setBlockHex(cleanHex(event.target.value).slice(0, 32))}
                 className="font-mono text-[0.8125rem]"
               />
             )}
             {format === 'hex' && blockHex.length !== 32 ? (
-              <FieldError className="text-xs">{t('aesLesson.blockInvalid')}</FieldError>
+              <FieldError id="aes-lesson-block-note" className="text-xs">
+                {t('aesLesson.blockInvalid')}
+              </FieldError>
             ) : (
-              <FieldDescription className="text-xs">
+              <FieldDescription id="aes-lesson-block-note" className="text-xs">
                 {t('aesLesson.blockBytes', { count: blockBytes })}
                 {format === 'text' && ` · ${t('aesLesson.blockHint')}`}
               </FieldDescription>
@@ -666,6 +670,7 @@ export function AesLesson() {
                 autoComplete="off"
                 maxLength={keyBits / 4}
                 aria-invalid={!keyValue || undefined}
+                aria-describedby="aes-lesson-key-note"
                 onChange={(event) => setKeyHex(cleanHex(event.target.value).slice(0, keyBits / 4))}
                 className="font-mono text-[0.8125rem]"
               />
@@ -684,11 +689,11 @@ export function AesLesson() {
               </Tooltip>
             </div>
             {keyValue ? (
-              <FieldDescription className="text-xs">
+              <FieldDescription id="aes-lesson-key-note" className="text-xs">
                 AES-{keyBits}, {t('aesLesson.roundCount', { rounds: keyBits / 32 + 6 })}
               </FieldDescription>
             ) : (
-              <FieldError className="text-xs">
+              <FieldError id="aes-lesson-key-note" className="text-xs">
                 {t('aesLesson.keyInvalid', { bits: keyBits, hex: keyBits / 4 })}
               </FieldError>
             )}

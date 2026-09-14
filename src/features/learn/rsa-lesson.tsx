@@ -15,7 +15,7 @@ import { navigate } from '@/app/routes'
 import { Callout } from '@/components/common/callout'
 import { Tag } from '@/components/common/choice'
 import { Panel } from '@/components/common/page'
-import { SettingsSection } from '@/components/common/settings-section'
+import { SettingsPanel, SettingsSection } from '@/components/common/settings-section'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -121,12 +121,17 @@ function DigitsField({
           autoComplete="off"
           spellCheck={false}
           aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
           onChange={(event) => onChange(event.target.value.replace(/\D/g, '').slice(0, 40))}
           className="font-mono text-[0.8125rem] tabular-nums"
         />
         {children}
       </div>
-      {error && <FieldError className="text-xs">{error}</FieldError>}
+      {error && (
+        <FieldError id={`${id}-error`} className="text-xs">
+          {error}
+        </FieldError>
+      )}
     </Field>
   )
 }
@@ -414,11 +419,20 @@ function FactorStep({ number, rsaKey }: { number: number; rsaKey: TextbookKey })
   return (
     <LessonStep number={number} title={t('rsaLesson.step7')} description={t('rsaLesson.step7Body')}>
       <div className="flex flex-wrap items-center gap-3">
-        <Button onClick={run} disabled={!allowed || running}>
+        <Button
+          disabled={!allowed}
+          aria-disabled={running || undefined}
+          onClick={running ? undefined : run}
+          className="aria-disabled:opacity-50"
+        >
           {running ? <Spinner /> : <HammerIcon weight="bold" />}
           {running ? t('rsaLesson.factoring') : t('rsaLesson.factor')}
         </Button>
         {!allowed && <span className="text-xs text-muted-foreground">{t('rsaLesson.factorTooBig')}</span>}
+        {/* Screen readers do not announce the callout when it appears, so the outcome is read out here. */}
+        <span className="sr-only" aria-live="polite">
+          {result && recoveredD !== null ? t('rsaLesson.recoveredKey', { d: recoveredD.toString() }) : ''}
+        </span>
       </div>
       {result && found && recoveredD !== null && (
         <Callout tone="bad" title={t('rsaLesson.recoveredKey', { d: recoveredD.toString() })}>
@@ -487,7 +501,7 @@ export function RsaLesson() {
   const { p, q, n, phi, lambda, e, d } = rsaKey
 
   const aside = (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('rsaLesson.setupPanel')}>
       <SettingsSection title={t('rsaLesson.setupTitle')}>
         <div className="grid grid-cols-2 gap-3">
           <DigitsField
@@ -576,7 +590,7 @@ export function RsaLesson() {
           {t('rsaLesson.textbookWarning')}
         </Callout>
       </div>
-    </Panel>
+    </SettingsPanel>
   )
 
   return (
@@ -585,6 +599,7 @@ export function RsaLesson() {
         {aside}
       </div>
       <Panel className={cn('p-4 transition-opacity sm:p-6', stale && 'opacity-60')}>
+        <h2 className="sr-only">{t('rsaLesson.stepsTitle')}</h2>
         <LessonSteps>
           <LessonStep
             number={1}

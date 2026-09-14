@@ -1,12 +1,11 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import { ArrowRightIcon, SlidersHorizontalIcon, WarningIcon } from '@phosphor-icons/react'
 import { cn } from 'cn'
 import { navigate } from '@/app/routes'
 import { AdvancedLink } from '@/components/common/advanced-link'
 import { ChoiceCards, NumberField, Tag } from '@/components/common/choice'
 import { DetectionSummary } from '@/components/crypto/detection-summary'
-import { Panel } from '@/components/common/page'
-import { SettingsSection } from '@/components/common/settings-section'
+import { SettingsPanel, SettingsSection } from '@/components/common/settings-section'
 import { KeyField, PasswordField } from '@/components/common/secret-fields'
 import { Segmented } from '@/components/common/segmented'
 import { DetailsList } from '@/components/common/output'
@@ -242,18 +241,27 @@ function TextField({
   mono?: boolean
   placeholder?: string
 }) {
+  const id = useId()
   return (
     <Field className="gap-1.5">
-      <FieldLabel className="text-xs font-medium text-muted-foreground">{label}</FieldLabel>
+      <FieldLabel htmlFor={id} className="text-xs font-medium text-muted-foreground">
+        {label}
+      </FieldLabel>
       <Input
+        id={id}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         spellCheck={false}
         autoComplete="off"
         placeholder={placeholder}
+        aria-describedby={hint ? `${id}-hint` : undefined}
         className={cn('h-8', mono && 'font-mono text-[0.8125rem]')}
       />
-      {hint && <FieldDescription className="text-xs">{hint}</FieldDescription>}
+      {hint && (
+        <FieldDescription id={`${id}-hint`} className="text-xs">
+          {hint}
+        </FieldDescription>
+      )}
     </Field>
   )
 }
@@ -273,7 +281,7 @@ export function EncryptSettings({ level, options, onOptions, secret, onSecret, e
   const kind = encryptSecretKind(level, options, secret)
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('aes.encryptSettings')}>
       <SettingsSection title={t('aes.keySection')}>
         {advanced && options.format === 'edt' && (
           <Segmented<SecretKind>
@@ -445,7 +453,7 @@ export function EncryptSettings({ level, options, onOptions, secret, onSecret, e
           )}
         </>
       )}
-    </Panel>
+    </SettingsPanel>
   )
 }
 
@@ -489,7 +497,7 @@ export function DecryptSettings({
   else if (summary) detected = t('aes.detectEdtRsa')
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('aes.decryptSettings')}>
       <SettingsSection title={t('aes.detected')}>
         <DetectionSummary
           recognized={result !== null}
@@ -654,6 +662,6 @@ export function DecryptSettings({
             </Button>
           </SettingsSection>
         ))}
-    </Panel>
+    </SettingsPanel>
   )
 }

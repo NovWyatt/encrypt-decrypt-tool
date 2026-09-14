@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { ListIcon, LockKeyIcon, ShieldCheckIcon } from '@phosphor-icons/react'
 import { cn } from 'cn'
 import { motion } from 'motion/react'
@@ -48,7 +48,9 @@ function NavList({ onNavigate, layoutId }: { onNavigate?: () => void; layoutId: 
                 }}
                 className={cn(
                   'relative isolate flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                  active ? 'text-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
+                  active
+                    ? 'text-foreground forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
+                    : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
                 )}
               >
                 {active && (
@@ -56,11 +58,14 @@ function NavList({ onNavigate, layoutId }: { onNavigate?: () => void; layoutId: 
                     layoutId={layoutId}
                     layoutDependency={current}
                     aria-hidden
-                    className="absolute inset-0 -z-10 rounded-lg bg-sidebar-accent"
+                    className="absolute inset-0 -z-10 rounded-lg bg-sidebar-accent forced-colors:bg-[Highlight]"
                     transition={{ type: 'spring', stiffness: 520, damping: 42 }}
                   />
                 )}
-                <route.icon weight={active ? 'fill' : 'regular'} className={cn('size-4.5', active && 'text-primary')} />
+                <route.icon
+                  weight={active ? 'fill' : 'regular'}
+                  className={cn('size-4.5', active && 'text-primary forced-colors:text-[HighlightText]')}
+                />
                 {t(route.label)}
               </a>
             )
@@ -91,6 +96,7 @@ function SidebarFooter() {
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
+  const navigatedFromMenu = useRef(false)
 
   return (
     <div className="min-h-[100dvh] bg-background">
@@ -101,7 +107,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         {t('app.skipToContent')}
       </a>
 
-      <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
+      <aside
+        aria-label={t('nav.sidebar')}
+        className="fixed inset-y-0 left-0 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex"
+      >
         <div className="flex h-16 items-center px-5">
           <Brand />
         </div>
@@ -131,6 +140,14 @@ export function AppShell({ children }: { children: ReactNode }) {
               const target = event.currentTarget as HTMLElement
               target.querySelector<HTMLElement>('[aria-current="page"]')?.focus({ preventScroll: true })
             }}
+            onCloseAutoFocus={(event) => {
+              if (!navigatedFromMenu.current) return
+              navigatedFromMenu.current = false
+              // After picking a page, continue at its heading instead of back on the menu button.
+              event.preventDefault()
+              const heading = document.querySelector<HTMLElement>('main > :not([hidden]) h1')
+              ;(heading ?? document.getElementById('main'))?.focus({ preventScroll: true })
+            }}
           >
             <SheetHeader className="h-14 justify-center px-5">
               <SheetTitle className="sr-only">{t('nav.navigation')}</SheetTitle>
@@ -138,7 +155,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Brand />
             </SheetHeader>
             <div className="flex-1 overflow-y-auto px-3 py-3">
-              <NavList layoutId="nav-mobile" onNavigate={() => setMenuOpen(false)} />
+              <NavList
+                layoutId="nav-mobile"
+                onNavigate={() => {
+                  navigatedFromMenu.current = true
+                  setMenuOpen(false)
+                }}
+              />
             </div>
             <div className="border-t border-sidebar-border p-4">
               <SidebarFooter />
@@ -147,7 +170,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Sheet>
       </header>
 
-      <main id="main" className="lg:pl-64">
+      <main id="main" tabIndex={-1} className="outline-none lg:pl-64">
         {children}
       </main>
     </div>

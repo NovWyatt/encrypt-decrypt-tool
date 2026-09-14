@@ -68,6 +68,7 @@ export function ImportKeyDialog({ open, onOpenChange, onImported }: ImportKeyDia
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
+    if (busy) return
     if (!text.trim()) return setError(new InputProblem('errors.emptyKeyText'))
     setBusy(true)
     setError(null)
@@ -178,7 +179,8 @@ export function ImportKeyDialog({ open, onOpenChange, onImported }: ImportKeyDia
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={busy}>
               {t('common.cancel')}
             </Button>
-            <Button type="submit" disabled={busy} className="min-w-32">
+            {/* Stays focusable while busy, so keyboard focus is not lost inside the dialog. */}
+            <Button type="submit" aria-disabled={busy || undefined} className="min-w-32 aria-disabled:opacity-50">
               {busy ? <Spinner /> : <DownloadSimpleIcon weight="bold" />}
               {busy ? t('keys.importing') : t('keys.importAction')}
             </Button>

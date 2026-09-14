@@ -4,9 +4,8 @@ import { AdvancedLink } from '@/components/common/advanced-link'
 import { Callout } from '@/components/common/callout'
 import { ChoiceCards, Tag } from '@/components/common/choice'
 import { DetailsList } from '@/components/common/output'
-import { Panel } from '@/components/common/page'
 import { Segmented } from '@/components/common/segmented'
-import { SettingsSection } from '@/components/common/settings-section'
+import { SettingsPanel, SettingsSection } from '@/components/common/settings-section'
 import { DetectionSummary } from '@/components/crypto/detection-summary'
 import { HashPicker } from '@/components/crypto/hash-picker'
 import { KeyReference } from '@/components/crypto/summary-details'
@@ -52,7 +51,7 @@ export function RsaEncryptSettings({
   )
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('aes.encryptSettings')}>
       <SettingsSection title={t('rsa.recipients')}>
         {keys.length === 0 ? (
           <KeyringEmpty
@@ -157,7 +156,7 @@ export function RsaEncryptSettings({
           )}
         </>
       )}
-    </Panel>
+    </SettingsPanel>
   )
 }
 
@@ -208,7 +207,7 @@ export function RsaDecryptSettings({
         : null
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('aes.decryptSettings')}>
       <SettingsSection title={t('aes.detected')}>
         <DetectionSummary recognized={result !== null} label={detected}>
           {inspection.status === 'invalid' && (
@@ -288,6 +287,6 @@ export function RsaDecryptSettings({
           )}
         </SettingsSection>
       )}
-    </Panel>
+    </SettingsPanel>
   )
 }

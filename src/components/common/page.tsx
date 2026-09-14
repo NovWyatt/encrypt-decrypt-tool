@@ -19,7 +19,13 @@ export function PageHeader({
   return (
     <header className="mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
-        <h1 className="text-2xl leading-[1.2] font-semibold tracking-tight text-balance md:text-[1.75rem]">{title}</h1>
+        {/* Focusable from script only, so the mobile menu can hand focus to the page it opened. */}
+        <h1
+          tabIndex={-1}
+          className="text-2xl leading-[1.2] font-semibold tracking-tight text-balance outline-none md:text-[1.75rem]"
+        >
+          {title}
+        </h1>
         {description && (
           <p className="mt-1.5 max-w-[62ch] text-sm leading-relaxed text-pretty text-muted-foreground md:text-[0.9375rem]">
             {description}

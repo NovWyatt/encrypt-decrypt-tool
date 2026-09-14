@@ -18,6 +18,7 @@ export const en: Dictionary = {
     learn: 'Learn cryptography',
     openMenu: 'Open menu',
     navigation: 'Navigation',
+    sidebar: 'Sidebar',
   },
   settings: {
     level: 'Level',
@@ -164,6 +165,8 @@ export const en: Dictionary = {
     stageEncrypt: 'Encrypting',
     stageDecrypt: 'Decrypting',
     resultTitle: 'Result',
+    encryptSettings: 'Encryption settings',
+    decryptSettings: 'Decryption settings',
     emptyEncryptTitle: 'Ciphertext appears here',
     emptyEncryptBody: 'Enter text, set a password, then press Encrypt.',
     emptyDecryptTitle: 'The original text appears here',
@@ -352,6 +355,8 @@ export const en: Dictionary = {
     signature: 'Signature',
     signaturePlaceholder:
       'Paste the signature (-----BEGIN EDT SIGNATURE-----, base64 or hex), or open a signature file',
+    signSettings: 'Signing settings',
+    verifySettings: 'Verification settings',
     signer: 'Signing key',
     signerHint: 'The signature is made with the selected private key.',
     verifier: 'Verification key',
@@ -529,6 +534,8 @@ export const en: Dictionary = {
     fromKey: 'taken from the key',
   },
   rsaLesson: {
+    setupPanel: 'Key setup',
+    stepsTitle: 'Steps',
     setupTitle: 'Pick two primes',
     e: 'Public exponent e',
     eAuto: 'Auto',

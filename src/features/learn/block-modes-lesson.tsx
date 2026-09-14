@@ -5,6 +5,7 @@ import { navigate } from '@/app/routes'
 import { Callout } from '@/components/common/callout'
 import { Tag } from '@/components/common/choice'
 import { Panel, PanelHeader } from '@/components/common/page'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -260,6 +261,7 @@ function TextDemo({ modes }: { modes: DemoMode[] }) {
           </FieldLabel>
           <Input
             id="modes-text"
+            aria-describedby="modes-text-hint"
             value={text}
             spellCheck={false}
             autoComplete="off"
@@ -270,12 +272,15 @@ function TextDemo({ modes }: { modes: DemoMode[] }) {
             }}
             className="font-mono text-[0.8125rem]"
           />
-          <FieldDescription className="text-xs">{t('modes.textHint', { max: MAX_TEXT_BYTES })}</FieldDescription>
+          <FieldDescription id="modes-text-hint" className="text-xs">
+            {t('modes.textHint', { max: MAX_TEXT_BYTES })}
+          </FieldDescription>
         </Field>
 
         {plainBlocks.length > 0 && (
-          <div className="scrollbar-thin overflow-x-auto rounded-lg border">
+          <ScrollRegion label={t('modes.textTitle')} className="rounded-lg border">
             <table className="w-full border-collapse text-[0.8125rem]">
+              <caption className="sr-only">{t('modes.textTitle')}</caption>
               <thead className="bg-muted/60 text-xs text-muted-foreground">
                 <tr>
                   <th scope="col" className="w-12 px-3 py-2 text-left font-medium">
@@ -325,7 +330,7 @@ function TextDemo({ modes }: { modes: DemoMode[] }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </ScrollRegion>
         )}
 
         {repeats > 0 ? (

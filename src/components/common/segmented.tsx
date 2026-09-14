@@ -9,6 +9,8 @@ export interface SegmentedOption<T extends string> {
   label: ReactNode
   icon?: Icon
   disabled?: boolean
+  /** Language of the label, when it differs from the page. */
+  lang?: string
 }
 
 interface SegmentedProps<T extends string> {
@@ -57,8 +59,9 @@ export function Segmented<T extends string>({
             key={option.value}
             value={option.value}
             disabled={option.disabled}
+            lang={option.lang}
             className={cn(
-              'relative isolate inline-flex items-center justify-center rounded-md font-medium whitespace-nowrap text-muted-foreground transition-colors outline-none select-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:text-foreground',
+              'relative isolate inline-flex items-center justify-center rounded-md font-medium whitespace-nowrap text-muted-foreground transition-colors outline-none select-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:text-foreground forced-colors:data-[state=on]:text-[HighlightText] forced-colors:data-[state=on]:forced-color-adjust-none',
               SIZES[size],
               fullWidth && 'flex-1',
             )}
@@ -69,7 +72,7 @@ export function Segmented<T extends string>({
                 // Only animate when the selection changes, not when surrounding layout shifts.
                 layoutDependency={value}
                 aria-hidden
-                className="absolute inset-0 -z-10 rounded-md bg-surface shadow-[0_1px_2px_oklch(0.2_0.01_286/0.08),0_0_0_1px_oklch(0.2_0.01_286/0.06)] dark:bg-accent dark:shadow-none"
+                className="absolute inset-0 -z-10 rounded-md bg-surface shadow-[0_1px_2px_oklch(0.2_0.01_286/0.08),0_0_0_1px_oklch(0.2_0.01_286/0.06)] dark:bg-accent dark:shadow-none forced-colors:bg-[Highlight]"
                 transition={{ type: 'spring', stiffness: 520, damping: 40 }}
               />
             )}

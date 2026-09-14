@@ -4,6 +4,7 @@ import { cn } from 'cn'
 import { Callout } from '@/components/common/callout'
 import { CopyButton } from '@/components/common/copy-button'
 import { ErrorAlert } from '@/components/common/error-alert'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { PasswordField } from '@/components/common/secret-fields'
 import { Segmented } from '@/components/common/segmented'
 import { Button } from '@/components/ui/button'
@@ -153,7 +154,13 @@ export function KeyExport({ ringKey }: { ringKey: RingKey }) {
             allowGenerate
             autoComplete="new-password"
           />
-          <Button type="button" variant="outline" className="self-start" onClick={createEncrypted} disabled={busy}>
+          <Button
+            type="button"
+            variant="outline"
+            className="self-start aria-disabled:opacity-50"
+            aria-disabled={busy || undefined}
+            onClick={busy ? undefined : createEncrypted}
+          >
             {busy ? <Spinner /> : <LockKeyIcon />}
             {t('keys.exportCreate')}
           </Button>
@@ -165,17 +172,17 @@ export function KeyExport({ ringKey }: { ringKey: RingKey }) {
 
       {current && (
         <div className="overflow-hidden rounded-lg border">
-          <pre
-            tabIndex={0}
-            aria-label={t('keys.exportPreview')}
-            className={cn(
-              'max-h-56 scrollbar-thin overflow-auto bg-muted/40 px-3 py-2.5 font-mono text-[0.6875rem] leading-relaxed outline-none focus-visible:ring-3 focus-visible:ring-ring/40',
-              // PEM keeps its 64-column lines; single-line formats (OpenSSH, JWK values) wrap anywhere.
-              current.format.endsWith('-pem') ? 'whitespace-pre' : 'break-all whitespace-pre-wrap',
-            )}
-          >
-            {current.text}
-          </pre>
+          <ScrollRegion label={t('keys.exportPreview')} className="max-h-56 bg-muted/40">
+            <pre
+              className={cn(
+                'w-fit min-w-full px-3 py-2.5 font-mono text-[0.6875rem] leading-relaxed',
+                // PEM keeps its 64-column lines; single-line formats (OpenSSH, JWK values) wrap anywhere.
+                current.format.endsWith('-pem') ? 'whitespace-pre' : 'break-all whitespace-pre-wrap',
+              )}
+            >
+              {current.text}
+            </pre>
+          </ScrollRegion>
           <div className="flex flex-wrap items-center gap-2 border-t px-2.5 py-2">
             <CopyButton value={current.text} onCopied={saved} />
             <Button

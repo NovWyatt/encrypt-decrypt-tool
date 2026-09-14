@@ -4,9 +4,8 @@ import { AdvancedLink } from '@/components/common/advanced-link'
 import { Callout } from '@/components/common/callout'
 import { ChoiceCards, NumberField, Tag } from '@/components/common/choice'
 import { DetailsList } from '@/components/common/output'
-import { Panel } from '@/components/common/page'
 import { Segmented } from '@/components/common/segmented'
-import { SettingsSection } from '@/components/common/settings-section'
+import { SettingsPanel, SettingsSection } from '@/components/common/settings-section'
 import { DetectionSummary } from '@/components/crypto/detection-summary'
 import { HashPicker } from '@/components/crypto/hash-picker'
 import { KeyReference } from '@/components/crypto/summary-details'
@@ -68,7 +67,7 @@ export function SignSettings({
   const maxSalt = pssMaxSaltLength(bits, options.hash)
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('sign.signSettings')}>
       <SettingsSection title={t('sign.signer')}>
         {privateKeys.length === 0 ? (
           <KeyringEmpty
@@ -165,7 +164,7 @@ export function SignSettings({
           </SettingsSection>
         </>
       )}
-    </Panel>
+    </SettingsPanel>
   )
 }
 
@@ -259,7 +258,7 @@ export function VerifySettings({
   }
 
   return (
-    <Panel as="aside" className="overflow-hidden">
+    <SettingsPanel title={t('sign.verifySettings')}>
       <SettingsSection title={t('aes.detected')}>
         <DetectionSummary recognized={result !== null} label={detected}>
           {summary?.kind === 'signature' && summary.scheme && (
@@ -335,6 +334,6 @@ export function VerifySettings({
           )}
         </SettingsSection>
       )}
-    </Panel>
+    </SettingsPanel>
   )
 }

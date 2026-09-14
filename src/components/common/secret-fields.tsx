@@ -38,7 +38,9 @@ function StrengthMeter({ password }: { password: string }) {
             key={segment}
             className={cn(
               'h-1 rounded-full transition-colors duration-300',
-              score >= segment ? STRENGTH_COLORS[score] : 'bg-muted-foreground/15',
+              score >= segment
+                ? `${STRENGTH_COLORS[score]} forced-colors:bg-[CanvasText]`
+                : 'bg-muted-foreground/15 forced-colors:bg-[GrayText]',
             )}
           />
         ))}
@@ -73,6 +75,7 @@ export function PasswordField({
 }: PasswordFieldProps) {
   const { t } = useI18n()
   const id = useId()
+  const describedBy = error || hint ? `${id}-description` : undefined
   const [visible, setVisible] = useState(false)
 
   const generate = () => {
@@ -96,6 +99,7 @@ export function PasswordField({
           spellCheck={false}
           placeholder={placeholder}
           aria-invalid={Boolean(error) || undefined}
+          aria-describedby={describedBy}
           className={cn(visible && value && 'font-mono text-[0.8125rem]')}
         />
         <InputGroupAddon align="inline-end">
@@ -111,9 +115,13 @@ export function PasswordField({
       </InputGroup>
       {showStrength && <StrengthMeter password={value} />}
       {error ? (
-        <FieldError>{error}</FieldError>
+        <FieldError id={describedBy}>{error}</FieldError>
       ) : (
-        hint && <FieldDescription className="text-xs">{hint}</FieldDescription>
+        hint && (
+          <FieldDescription id={describedBy} className="text-xs">
+            {hint}
+          </FieldDescription>
+        )
       )}
     </Field>
   )
@@ -144,6 +152,7 @@ interface KeyFieldProps {
 export function KeyField({ label, bits, value, onChange, hint, error, allowGenerate }: KeyFieldProps) {
   const { t } = useI18n()
   const id = useId()
+  const describedBy = `${id}-count${error || hint ? ` ${id}-description` : ''}`
   const [visible, setVisible] = useState(true)
   const bytes = keyTextBytes(value)
   const expected = bits / 8
@@ -154,6 +163,7 @@ export function KeyField({ label, bits, value, onChange, hint, error, allowGener
       <div className="flex items-baseline justify-between gap-2">
         <FieldLabel htmlFor={id}>{label}</FieldLabel>
         <span
+          id={`${id}-count`}
           className={cn(
             'font-mono text-xs tabular-nums',
             status === 'ok' ? 'text-success' : status === 'bad' ? 'text-destructive' : 'text-muted-foreground',
@@ -171,6 +181,7 @@ export function KeyField({ label, bits, value, onChange, hint, error, allowGener
           autoComplete="off"
           spellCheck={false}
           aria-invalid={Boolean(error) || status === 'bad' || undefined}
+          aria-describedby={describedBy}
           className="font-mono text-[0.8125rem]"
         />
         <InputGroupAddon align="inline-end">
@@ -185,9 +196,13 @@ export function KeyField({ label, bits, value, onChange, hint, error, allowGener
         </InputGroupAddon>
       </InputGroup>
       {error ? (
-        <FieldError>{error}</FieldError>
+        <FieldError id={`${id}-description`}>{error}</FieldError>
       ) : (
-        hint && <FieldDescription className="text-xs">{hint}</FieldDescription>
+        hint && (
+          <FieldDescription id={`${id}-description`} className="text-xs">
+            {hint}
+          </FieldDescription>
+        )
       )}
     </Field>
   )

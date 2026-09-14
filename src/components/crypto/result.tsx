@@ -56,6 +56,7 @@ export function ResultPanel<T, Stage extends string>({
       <div className="flex min-h-12 flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b px-4 py-2">
         <div className="flex min-w-0 items-center gap-2" role="status">
           <h2 className="text-sm font-semibold">{title ?? t('aes.resultTitle')}</h2>
+          {state.status === 'running' && <span className="sr-only">{stageLabel(state.stage)}</span>}
           {state.status === 'success' && status?.(state.data)}
         </div>
         {state.status === 'success' && meta && (

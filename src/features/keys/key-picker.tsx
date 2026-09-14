@@ -81,14 +81,14 @@ export function KeyPicker({ keys, value, onChange, multiple, ariaLabel, isDisabl
           disabled={isDisabled?.(key)}
           className={cn(
             ROW,
-            'focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 data-[state=checked]:border-primary/60 data-[state=checked]:bg-primary/[0.06] data-[state=checked]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=checked]:bg-primary/10',
+            'focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 data-[state=checked]:border-primary/60 data-[state=checked]:bg-primary/[0.06] data-[state=checked]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=checked]:bg-primary/10 forced-colors:data-[state=checked]:border-[Highlight]',
           )}
         >
           <span
             aria-hidden
-            className="grid size-3.5 shrink-0 place-items-center rounded-full border border-input transition-colors group-data-[state=checked]/key:border-primary group-data-[state=checked]/key:bg-primary"
+            className="grid size-3.5 shrink-0 place-items-center rounded-full border border-input transition-colors group-data-[state=checked]/key:border-primary group-data-[state=checked]/key:bg-primary forced-colors:group-data-[state=checked]/key:border-[Highlight] forced-colors:group-data-[state=checked]/key:bg-[Highlight]"
           >
-            <span className="size-1.5 scale-0 rounded-full bg-primary-foreground transition-transform group-data-[state=checked]/key:scale-100" />
+            <span className="size-1.5 scale-0 rounded-full bg-primary-foreground transition-transform group-data-[state=checked]/key:scale-100 forced-colors:bg-[HighlightText]" />
           </span>
           <KeySummary ringKey={key} aside={aside?.(key)} />
         </RadioGroupPrimitive.Item>

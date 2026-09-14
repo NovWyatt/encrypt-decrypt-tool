@@ -51,6 +51,7 @@ export function GenerateKeyDialog({ open, onOpenChange, onCreated }: GenerateKey
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
+    if (busy) return
     setBusy(true)
     setError(null)
     try {
@@ -136,7 +137,8 @@ export function GenerateKeyDialog({ open, onOpenChange, onCreated }: GenerateKey
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={busy}>
               {t('common.cancel')}
             </Button>
-            <Button type="submit" disabled={busy} className="min-w-36">
+            {/* Stays focusable while busy, so keyboard focus is not lost inside the dialog. */}
+            <Button type="submit" aria-disabled={busy || undefined} className="min-w-36 aria-disabled:opacity-50">
               {busy ? <Spinner /> : <KeyIcon weight="bold" />}
               {busy ? t('keys.generating') : t('keys.generate')}
             </Button>

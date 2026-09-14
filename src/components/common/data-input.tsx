@@ -188,6 +188,7 @@ export function DataInput({
             }}
             placeholder={placeholder}
             spellCheck={false}
+            aria-keyshortcuts={onSubmit ? 'Control+Enter Meta+Enter' : undefined}
             className={cn(
               'block max-h-[440px] w-full resize-y scrollbar-thin bg-transparent px-4 py-3 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80',
               compact ? 'min-h-[120px]' : 'min-h-[220px]',

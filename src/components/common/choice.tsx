@@ -45,14 +45,14 @@ export function ChoiceCards<T extends string>({
           className={cn(
             'group/choice relative flex w-full min-w-0 items-start gap-2.5 rounded-lg border bg-transparent px-3 py-2.5 text-left transition-[background-color,border-color,box-shadow] outline-none',
             'hover:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50',
-            'data-[state=checked]:border-primary/60 data-[state=checked]:bg-primary/[0.06] data-[state=checked]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=checked]:bg-primary/10',
+            'data-[state=checked]:border-primary/60 data-[state=checked]:bg-primary/[0.06] data-[state=checked]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=checked]:bg-primary/10 forced-colors:data-[state=checked]:border-[Highlight]',
           )}
         >
           <span
             aria-hidden
-            className="mt-[3px] grid size-3.5 shrink-0 place-items-center rounded-full border border-input transition-colors group-data-[state=checked]/choice:border-primary group-data-[state=checked]/choice:bg-primary"
+            className="mt-[3px] grid size-3.5 shrink-0 place-items-center rounded-full border border-input transition-colors group-data-[state=checked]/choice:border-primary group-data-[state=checked]/choice:bg-primary forced-colors:group-data-[state=checked]/choice:border-[Highlight] forced-colors:group-data-[state=checked]/choice:bg-[Highlight]"
           >
-            <span className="size-1.5 scale-0 rounded-full bg-primary-foreground transition-transform group-data-[state=checked]/choice:scale-100" />
+            <span className="size-1.5 scale-0 rounded-full bg-primary-foreground transition-transform group-data-[state=checked]/choice:scale-100 forced-colors:bg-[HighlightText]" />
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm leading-5 font-medium">
@@ -121,9 +121,14 @@ export function NumberField({ label, value, onChange, min, max, step = 1, hint }
           if (Number.isFinite(next)) onChange(next)
         }}
         onBlur={() => onChange(Math.min(max, Math.max(min, Math.round(value / step) * step || min)))}
+        aria-describedby={hint ? `${id}-hint` : undefined}
         className="h-8 font-mono text-[0.8125rem] tabular-nums"
       />
-      {hint && <FieldDescription className="text-xs">{hint}</FieldDescription>}
+      {hint && (
+        <FieldDescription id={`${id}-hint`} className="text-xs">
+          {hint}
+        </FieldDescription>
+      )}
     </Field>
   )
 }

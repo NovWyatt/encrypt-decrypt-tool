@@ -28,7 +28,7 @@ export function AvalancheChart({ values, current, onRound }: AvalancheProps) {
       <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs">
         <span className="font-medium">{t('aesLesson.chartLabel')}</span>
         <span className="flex items-center gap-2 text-muted-foreground">
-          <span aria-hidden className="h-px w-5 bg-foreground/50" />
+          <span aria-hidden className="h-px w-5 bg-foreground/50 forced-colors:bg-[CanvasText]" />
           {t('aesLesson.randomLevel')}
         </span>
       </figcaption>
@@ -49,7 +49,10 @@ export function AvalancheChart({ values, current, onRound }: AvalancheProps) {
             <span
               key={tick}
               aria-hidden
-              className={cn('absolute inset-x-0 h-px', tick === 0 ? 'bg-foreground/20' : 'bg-border')}
+              className={cn(
+                'absolute inset-x-0 h-px forced-colors:bg-[GrayText]',
+                tick === 0 ? 'bg-foreground/20' : 'bg-border',
+              )}
               style={{ bottom: percent(tick) }}
             />
           ))}
@@ -76,7 +79,7 @@ export function AvalancheChart({ values, current, onRound }: AvalancheProps) {
                       </span>
                     )}
                     <span
-                      className="block w-full max-w-6 rounded-t-[4px] bg-chart-3 transition-[height,filter] duration-500 ease-out group-hover/bar:brightness-110 group-focus-visible/bar:brightness-110"
+                      className="block w-full max-w-6 rounded-t-[4px] bg-chart-3 transition-[height,filter] duration-500 ease-out group-hover/bar:brightness-110 group-focus-visible/bar:brightness-110 forced-colors:bg-[CanvasText]"
                       style={{ height: percent(bits) }}
                     />
                   </button>
@@ -91,7 +94,7 @@ export function AvalancheChart({ values, current, onRound }: AvalancheProps) {
           {/* The reference sits above the bars so it stays readable where they cross it. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 h-px bg-foreground/50"
+            className="pointer-events-none absolute inset-x-0 h-px bg-foreground/50 forced-colors:bg-[CanvasText]"
             style={{ bottom: percent(RANDOM_LEVEL) }}
           />
         </div>

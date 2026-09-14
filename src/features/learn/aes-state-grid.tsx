@@ -1,6 +1,7 @@
 import { Fragment, useRef, type KeyboardEvent, type ReactNode } from 'react'
 import { cn } from 'cn'
 import { motion } from 'motion/react'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { useI18n } from '@/i18n'
 import { hex2, MIX_MATRIX, SBOX } from './aes-trace'
 
@@ -13,10 +14,13 @@ const CELLS = Array.from({ length: 16 }, (_, order) => {
 
 const CELL_BASE =
   'grid size-8 place-items-center rounded-md font-mono text-[0.8125rem] tabular-nums transition-colors md:size-9'
+// Forced colors drop the tints and the ring, so those tones fall back to system colors there.
 const CELL_TONES = {
   plain: 'bg-muted/70 text-foreground/90 dark:bg-muted',
-  related: 'bg-primary/15 text-foreground ring-1 ring-primary/45 ring-inset dark:bg-primary/25',
-  selected: 'bg-primary text-primary-foreground',
+  related:
+    'bg-primary/15 text-foreground ring-1 ring-primary/45 ring-inset dark:bg-primary/25 forced-colors:border forced-colors:border-[Highlight]',
+  selected:
+    'bg-primary text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none',
 }
 
 interface StateGridProps {
@@ -173,7 +177,7 @@ export function ByteStrip({
             className={cn(
               'flex flex-col items-center rounded-md px-1 pt-0.5 pb-1 transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:min-w-9',
               index === selected
-                ? 'bg-primary text-primary-foreground'
+                ? 'bg-primary text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
                 : 'bg-muted/60 hover:bg-primary/10 dark:bg-muted',
             )}
           >
@@ -189,15 +193,17 @@ export function ByteStrip({
 }
 
 export function SboxTable({ input }: { input: number }) {
+  const { t } = useI18n()
   const row = input >> 4
   const column = input & 0x0f
   const digits = Array.from({ length: 16 }, (_, digit) => digit)
   return (
-    <div className="scrollbar-thin overflow-x-auto rounded-lg border p-2">
+    <ScrollRegion label={t('aesLesson.sboxTable')} className="rounded-lg border p-2">
       <table className="mx-auto border-collapse font-mono text-[0.6875rem] tabular-nums">
+        <caption className="sr-only">{t('aesLesson.sboxTable')}</caption>
         <thead>
           <tr>
-            <th />
+            <td />
             {digits.map((digit) => (
               <th
                 key={digit}
@@ -226,7 +232,7 @@ export function SboxTable({ input }: { input: number }) {
                     className={cn(
                       'rounded-[3px] px-1 py-px text-center',
                       hit
-                        ? 'bg-primary font-semibold text-primary-foreground'
+                        ? 'bg-primary font-semibold text-primary-foreground forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] forced-colors:forced-color-adjust-none'
                         : (high === row || low === column) && 'bg-primary/[0.08] dark:bg-primary/15',
                     )}
                   >
@@ -238,6 +244,6 @@ export function SboxTable({ input }: { input: number }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollRegion>
   )
 }

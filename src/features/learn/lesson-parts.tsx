@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { CaretDownIcon, ChartBarIcon, TableIcon } from '@phosphor-icons/react'
 import { cn } from 'cn'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { Segmented } from '@/components/common/segmented'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -137,14 +138,15 @@ export function LessonTable({
   head: ReactNode[]
   children: ReactNode
   className?: string
-  caption?: string
+  /** Names the table, and the scrolling region around it for keyboard users. */
+  caption: string
   /** Rules between rows; turn off when rows are grouped under their own heading rows. */
   divided?: boolean
 }) {
   return (
-    <div className={cn('scrollbar-thin overflow-auto rounded-lg border', className)}>
+    <ScrollRegion label={caption} className={cn('rounded-lg border', className)}>
       <table className="w-full border-collapse text-[0.8125rem]">
-        {caption && <caption className="sr-only">{caption}</caption>}
+        <caption className="sr-only">{caption}</caption>
         <thead className="sticky top-0 z-10 bg-muted/95 text-xs text-muted-foreground backdrop-blur-sm">
           <tr>
             {head.map((cell, index) => (
@@ -156,6 +158,6 @@ export function LessonTable({
         </thead>
         <tbody className={cn(divided && 'divide-y')}>{children}</tbody>
       </table>
-    </div>
+    </ScrollRegion>
   )
 }

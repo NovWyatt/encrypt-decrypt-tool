@@ -17,6 +17,7 @@ import { Tag } from '@/components/common/choice'
 import { CopyButton } from '@/components/common/copy-button'
 import { DetailsList } from '@/components/common/output'
 import { PageContainer, PageHeader, Panel } from '@/components/common/page'
+import { ScrollRegion } from '@/components/common/scroll-region'
 import { KeyIdenticon } from '@/components/crypto/key-identicon'
 import {
   AlertDialog,
@@ -152,7 +153,8 @@ function KeyRow({ ringKey, selected, onSelect }: { ringKey: RingKey; selected: b
       aria-current={selected || undefined}
       className={cn(
         'group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors outline-none hover:bg-muted/50 focus-visible:bg-muted/60',
-        selected && 'bg-primary/[0.05] hover:bg-primary/[0.07] dark:bg-primary/10',
+        selected &&
+          'bg-primary/[0.05] hover:bg-primary/[0.07] dark:bg-primary/10 forced-colors:border-l-4 forced-colors:border-[Highlight] forced-colors:pl-3',
       )}
     >
       <KeyIdenticon id={ringKey.id} className="size-10 rounded-xl" />
@@ -204,7 +206,7 @@ function KeyDetails({ ringKey }: { ringKey: RingKey }) {
   }
 
   return (
-    <Panel as="aside" className="overflow-hidden xl:sticky xl:top-6">
+    <Panel as="aside" aria-label={ringKey.name} className="overflow-hidden xl:sticky xl:top-6">
       <div className="flex items-start gap-3 border-b px-4 py-3.5">
         <KeyIdenticon id={ringKey.id} className="size-11 rounded-xl" />
         <div className="min-w-0 flex-1">
@@ -396,8 +398,13 @@ function KeyComponents({ ringKey }: { ringKey: RingKey }) {
               {rows.map((row) => (
                 <div key={row.label} className="flex flex-col gap-1">
                   <dt className="text-xs text-muted-foreground">{row.label}</dt>
-                  <dd className="max-h-28 scrollbar-thin overflow-y-auto rounded-md bg-muted/50 px-2.5 py-2 font-mono text-[0.6875rem] leading-relaxed break-all">
-                    {row.value}
+                  <dd>
+                    <ScrollRegion
+                      label={row.label}
+                      className="max-h-28 rounded-md bg-muted/50 px-2.5 py-2 font-mono text-[0.6875rem] leading-relaxed break-all"
+                    >
+                      {row.value}
+                    </ScrollRegion>
                   </dd>
                 </div>
               ))}

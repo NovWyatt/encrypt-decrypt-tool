@@ -48,11 +48,11 @@ export function LearnPage() {
               className={cn(
                 'group/lesson flex min-w-0 snap-start flex-col items-start gap-3 rounded-xl border bg-card p-4 text-left transition-[background-color,border-color,box-shadow] outline-none',
                 'hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50',
-                'data-[state=active]:border-primary/60 data-[state=active]:bg-primary/[0.05] data-[state=active]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=active]:bg-primary/10',
+                'data-[state=active]:border-primary/60 data-[state=active]:bg-primary/[0.05] data-[state=active]:shadow-[inset_0_0_0_1px_var(--primary)] dark:data-[state=active]:bg-primary/10 forced-colors:data-[state=active]:border-[Highlight]',
               )}
             >
               <span className="flex w-full items-center justify-between gap-2">
-                <span className="grid size-9 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors group-data-[state=active]/lesson:bg-primary group-data-[state=active]/lesson:text-primary-foreground">
+                <span className="grid size-9 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors group-data-[state=active]/lesson:bg-primary group-data-[state=active]/lesson:text-primary-foreground forced-colors:group-data-[state=active]/lesson:bg-[Highlight] forced-colors:group-data-[state=active]/lesson:text-[HighlightText] forced-colors:group-data-[state=active]/lesson:forced-color-adjust-none">
                   <item.icon weight="bold" className="size-[1.125rem]" />
                 </span>
                 <span className="text-xs font-medium text-muted-foreground tabular-nums">

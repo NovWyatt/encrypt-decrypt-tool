@@ -78,9 +78,10 @@ export function LanguageSwitch() {
       value={lang}
       onValueChange={(next) => updateSettings({ lang: next })}
       ariaLabel={t('settings.language')}
+      // Each language is named in itself, and marked so screen readers pronounce the name in that language.
       options={[
-        { value: 'vi', label: 'VI' },
-        { value: 'en', label: 'EN' },
+        { value: 'vi', label: 'Tiếng Việt', lang: 'vi' },
+        { value: 'en', label: 'English', lang: 'en' },
       ]}
     />
   )
