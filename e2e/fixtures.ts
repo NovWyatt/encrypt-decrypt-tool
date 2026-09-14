@@ -1,4 +1,4 @@
-import { expect, test as base, type Page } from '@playwright/test'
+import { expect, test as base, type Locator, type Page } from '@playwright/test'
 
 export { expect }
 
@@ -46,6 +46,29 @@ export function view(page: Page) {
 export async function goTo(page: Page, name: string) {
   await page.getByRole('navigation').getByRole('link', { name, exact: true }).click()
   await expect(view(page).getByRole('heading', { level: 1, name, exact: true })).toBeVisible()
+}
+
+/**
+ * Watches `scope` for the update that first shows `badge` in a status, and returns a function that resolves with the
+ * result text on screen in that same update. A status and its result come from one state, so any other text there,
+ * such as the previous result still fading out, is an old body left under the new status.
+ */
+export async function watchResult(scope: Locator, badge: string) {
+  const watch = await scope.evaluateHandle(
+    (root, badge) => ({
+      text: new Promise<string | null>((resolve) => {
+        const observer = new MutationObserver(() => {
+          const statuses = [...root.querySelectorAll('[role="status"]')]
+          if (!statuses.some((status) => status.textContent?.includes(badge))) return
+          observer.disconnect()
+          resolve(root.querySelector('pre')?.textContent ?? null)
+        })
+        observer.observe(root, { childList: true, characterData: true, subtree: true })
+      }),
+    }),
+    badge,
+  )
+  return () => watch.evaluate(({ text }) => text)
 }
 
 /** Opens a route with preset settings and waits until the page and its fonts are ready. */

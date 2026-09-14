@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { ArrowsDownUpIcon, CaretDownIcon, DownloadSimpleIcon, type Icon } from '@phosphor-icons/react'
 import { cn } from 'cn'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { CopyButton } from '@/components/common/copy-button'
 import { ErrorAlert } from '@/components/common/error-alert'
 import { OutputEmpty, OutputRunning, OutputText } from '@/components/common/output'
@@ -39,6 +39,11 @@ export function ResultPanel<T, Stage extends string>({
   children,
 }: ResultPanelProps<T, Stage>) {
   const { t } = useI18n()
+  const key = `${view}-${state.status}-${'id' in state ? state.id : 0}`
+  // The body the panel mounts with arrives with its page. Once the body has changed, each new one fades in.
+  const [mountKey, setMountKey] = useState<string | null>(key)
+  if (mountKey !== null && key !== mountKey) setMountKey(null)
+
   let body: ReactNode
   if (state.status === 'idle') body = <OutputEmpty icon={empty.icon} title={empty.title} body={empty.body} />
   else if (state.status === 'running')
@@ -63,17 +68,16 @@ export function ResultPanel<T, Stage extends string>({
           <p className="text-xs text-muted-foreground tabular-nums">{meta(state.data)}</p>
         )}
       </div>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={`${view}-${state.status}-${'id' in state ? state.id : 0}`}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, transition: { duration: 0.08 } }}
-          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {body}
-        </motion.div>
-      </AnimatePresence>
+      {/* No exit animation: the key swaps the body in the same commit as the header. AnimatePresence in "wait" mode
+          could leave an old body on screen for good when an operation finished while that body was leaving. */}
+      <motion.div
+        key={key}
+        initial={mountKey === null && { opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {body}
+      </motion.div>
     </Panel>
   )
 }

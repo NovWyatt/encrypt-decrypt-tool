@@ -1,4 +1,4 @@
-import { expect, goTo, openApp, test, view } from './fixtures.ts'
+import { expect, goTo, openApp, test, view, watchResult } from './fixtures.ts'
 
 const PASSWORD = 'mat-khau-kiem-tra-2026'
 
@@ -26,8 +26,10 @@ test('AES encrypts with a password and decrypts back, and rejects a wrong passwo
   await expect(aes.getByRole('alert')).toBeVisible()
 
   await password.fill(PASSWORD)
+  const decrypted = await watchResult(aes, 'Đã giải mã')
   await aes.getByRole('button', { name: 'Giải mã', exact: true }).click()
   await expect(aes.getByRole('status').getByText('Đã giải mã', { exact: true })).toBeVisible()
+  expect(await decrypted(), 'result under the new status').toBe(text)
   await expect(aes.locator('pre')).toHaveText(text)
 })
 
@@ -49,9 +51,12 @@ test('RSA and signatures work with a key pair generated in the browser', async (
   await rsa.getByLabel('Văn bản cần mã hóa').fill(message)
   await rsa.getByRole('button', { name: 'Mã hóa', exact: true }).click()
   await expect(rsa.getByRole('status').getByText('Đã mã hóa', { exact: true })).toBeVisible()
+  // Decrypting straight after the switch once left the ciphertext or the empty placeholder under "Đã giải mã".
   await rsa.getByRole('button', { name: 'Chuyển sang giải mã' }).click()
+  const decrypted = await watchResult(rsa, 'Đã giải mã')
   await rsa.getByRole('button', { name: 'Giải mã', exact: true }).click()
   await expect(rsa.getByRole('status').getByText('Đã giải mã', { exact: true })).toBeVisible()
+  expect(await decrypted(), 'result under the new status').toBe(message)
   await expect(rsa.locator('pre')).toHaveText(message)
 
   await goTo(page, 'Chữ ký số')
